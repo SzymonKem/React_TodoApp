@@ -22,6 +22,7 @@ export default function ListWindow() {
                 isDone: false,
                 name: taskNameInput,
                 desc: taskDescInput,
+                editable: false,
             },
         ]);
     }
