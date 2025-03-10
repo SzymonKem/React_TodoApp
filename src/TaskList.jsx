@@ -4,8 +4,12 @@ export default function TaskList({ taskElementsList, setTaskElementsList }) {
         setTaskElementsList(taskElementsList.filter((t) => t.id !== taskId));
     }
 
-    function handleDone(t) {
-        t.isDone = !t.isDone;
+    function handleDone(taskId) {
+        setTaskElementsList(
+            taskElementsList.map((task) =>
+                task.id === taskId ? { ...task, isDone: !task.isDone } : task
+            )
+        );
     }
     return (
         <div className="taskList">
@@ -13,6 +17,10 @@ export default function TaskList({ taskElementsList, setTaskElementsList }) {
                 taskElementsList={taskElementsList}
                 onEditclicked={handleEdit}
                 onDeleteClicked={handleDelete}
+                doneChange={handleDone}
+            />
+            <DoneList
+                taskElementsList={taskElementsList}
                 doneChange={handleDone}
             />
         </div>
@@ -31,16 +39,27 @@ function ToDoList({
             {toDoElementsList.map((t) => (
                 <li
                     key={t.id}
-                    onClick={() => doneChange(t)}
+                    onClick={() => doneChange(t.id)}
                     className="inProgress"
                 >
                     <h2>{t.name}</h2>
                     <p>{t.desc}</p>
                     <div className="taskELementButtons">
-                        <button onClick={onEditclicked}>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onEditclicked();
+                            }}
+                        >
                             <span>Edit task</span>
                         </button>
-                        <button onClick={onDeleteClicked}>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onDeleteClicked(t.id);
+                            }}
+                        >
+                            {" "}
                             <span>Delete task</span>
                         </button>
                     </div>
@@ -50,16 +69,20 @@ function ToDoList({
     );
 }
 
-function DoneList(taskElementsList, doneChange) {
+function DoneList({ taskElementsList, doneChange }) {
     let doneElementsList = taskElementsList.filter((t) => t.isDone === true);
     return (
         <ul className="doneList">
-            {doneElementsList.map((t) => {
-                <li onClick={doneChange(t)} className="done">
+            {doneElementsList.map((t) => (
+                <li
+                    key={t.id}
+                    onClick={() => doneChange(t.id)}
+                    className="done"
+                >
                     <h2>{t.name}</h2>
                     <p>{t.desc}</p>
-                </li>;
-            })}
+                </li>
+            ))}
         </ul>
     );
 }
