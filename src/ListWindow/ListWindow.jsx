@@ -1,5 +1,6 @@
 import { useState } from "react";
-import TaskList from "./TaskList";
+import TaskList from "../TaskList/TaskList";
+import "./ListWindow.css";
 
 let nextId = 0;
 
@@ -28,17 +29,19 @@ export default function ListWindow() {
     }
     return (
         <div className="listWindow">
-            <input
-                type="text"
-                onChange={handleNameChange}
-                placeholder="Add a task name"
-            />
-            <input
-                type="text"
-                onChange={handleDescChange}
-                placeholder="Add a task description"
-            />
-            <button onClick={handleAddClick}>Add task</button>
+            <div className="inputs">
+                <input
+                    type="text"
+                    onChange={handleNameChange}
+                    placeholder="Add a task name"
+                />
+                <input
+                    type="text"
+                    onChange={handleDescChange}
+                    placeholder="Add a task description"
+                />
+                <button onClick={handleAddClick}>Add task</button>
+            </div>
             <TaskList
                 taskElementsList={taskElementsList}
                 setTaskElementsList={setTaskELementsList}

@@ -1,10 +1,10 @@
 import "./App.css";
-import ListWindow from "./ListWindow";
+import ListWindow from "../ListWindow/ListWindow.jsx";
 
 function App() {
     return (
         <>
-            <h1>Hello world!</h1>
+            <h1>ToDo list</h1>
             <ListWindow />
         </>
     );
