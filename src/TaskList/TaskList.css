@@ -30,6 +30,10 @@ li {
     border: 3px solid var(--gray-blue);
 }
 
+li > h2{
+    text-align: center;
+}
+
 p {
     margin-top: 0;
     padding: 20px;

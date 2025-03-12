@@ -6,6 +6,7 @@ let nextId = 0;
 
 export default function ListWindow() {
     let initialState = [];
+    const [renderItems, setRenderItems] = useState("all");
     const [taskElementsList, setTaskELementsList] = useState(initialState);
     const [taskNameInput, setTaskNameInput] = useState("");
     const [taskDescInput, setTaskDescInput] = useState("");
@@ -36,6 +37,7 @@ export default function ListWindow() {
     }
     return (
         <div className="listWindow">
+            {console.log("rendered listwindow")}
             <div className="inputs">
                 <input
                     type="text"
@@ -58,10 +60,34 @@ export default function ListWindow() {
                 >
                     ADD TASK
                 </button>
+                <div className="renderControls">
+                    <button
+                        onClick={() => {
+                            setRenderItems("all");
+                        }}
+                    >
+                        Show all tasks
+                    </button>
+                    <button
+                        onClick={() => {
+                            setRenderItems("inProgress");
+                        }}
+                    >
+                        Show tasks in progress
+                    </button>
+                    <button
+                        onClick={() => {
+                            setRenderItems("done");
+                        }}
+                    >
+                        Show done tasks
+                    </button>
+                </div>
             </div>
             <TaskList
                 taskElementsList={taskElementsList}
                 setTaskElementsList={setTaskELementsList}
+                renderItems={renderItems}
             />
         </div>
     );

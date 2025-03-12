@@ -1,27 +1,67 @@
 import { useRef, useEffect, useState } from "react";
 import "./TaskList.css";
 
-export default function TaskList({ taskElementsList, setTaskElementsList }) {
+export default function TaskList({
+    taskElementsList,
+    setTaskElementsList,
+    renderItems,
+}) {
     function handleDone(taskId) {
-        setTaskElementsList(
-            taskElementsList.map((task) =>
+        setTaskElementsList((prevTaskElementsList) =>
+            prevTaskElementsList.map((task) =>
                 task.id === taskId ? { ...task, isDone: !task.isDone } : task
             )
         );
     }
+    let content;
+    switch (renderItems) {
+        case "all":
+            content = (
+                <>
+                    <h1>In progress: </h1>
+                    <ToDoList
+                        taskElementsList={taskElementsList}
+                        setTaskElementsList={setTaskElementsList}
+                        doneChange={handleDone}
+                    />
+                    <h1>Done:</h1>
+                    <DoneList
+                        taskElementsList={taskElementsList}
+                        doneChange={handleDone}
+                    />
+                </>
+            );
+            break;
+        case "inProgress":
+            content = (
+                <>
+                    <h1>In progress: </h1>
+                    <ToDoList
+                        taskElementsList={taskElementsList}
+                        setTaskElementsList={setTaskElementsList}
+                        doneChange={handleDone}
+                    />
+                </>
+            );
+            break;
+        case "done":
+            content = (
+                <>
+                    <h1>Done:</h1>
+                    <DoneList
+                        taskElementsList={taskElementsList}
+                        doneChange={handleDone}
+                    />
+                </>
+            );
+            break;
+        default:
+            break;
+    }
     return (
         <div className="taskList">
-            <h1>In progress: </h1>
-            <ToDoList
-                taskElementsList={taskElementsList}
-                setTaskElementsList={setTaskElementsList}
-                doneChange={handleDone}
-            />
-            <h1>Done:</h1>
-            <DoneList
-                taskElementsList={taskElementsList}
-                doneChange={handleDone}
-            />
+            {console.log("rendered tasklist")}
+            {content}
         </div>
     );
 }
@@ -30,24 +70,24 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
     const editRef = useRef(null);
     const [orignalValues, setOrignalValues] = useState();
     function handleNameChange(taskId, value) {
-        setTaskElementsList(
-            taskElementsList.map((task) =>
+        setTaskElementsList((prevTaskElementsList) =>
+            prevTaskElementsList.map((task) =>
                 task.id === taskId ? { ...task, name: value } : task
             )
         );
     }
 
     function handleDescChange(taskId, value) {
-        setTaskElementsList(
-            taskElementsList.map((task) =>
+        setTaskElementsList((prevTaskElementsList) =>
+            prevTaskElementsList.map((task) =>
                 task.id === taskId ? { ...task, desc: value } : task
             )
         );
     }
 
     function handleEdit(taskId) {
-        setTaskElementsList(
-            taskElementsList.map((task) =>
+        setTaskElementsList((prevTaskElementsList) =>
+            prevTaskElementsList.map((task) =>
                 task.id === taskId
                     ? { ...task, editable: !task.editable }
                     : task
@@ -66,11 +106,11 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
     useEffect(() => {
         function handleOutsideClick(e) {
             if (editRef.current && !editRef.current.contains(e.target)) {
-                setTaskElementsList(
-                    taskElementsList.map((task) => ({
+                setTaskElementsList((prevTaskElementsList) =>
+                    prevTaskElementsList.map((task) => ({
                         ...task,
-                        name: orignalValues[task.id].name,
-                        desc: orignalValues[task.id].desc,
+                        name: orignalValues[task.id]?.name || task.name,
+                        desc: orignalValues[task.id]?.desc || task.desc,
                         editable: false,
                     }))
                 );
