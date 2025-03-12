@@ -1,12 +1,10 @@
-# React + Vite
+# React ToDo app
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Prosta aplikacja listy zadań
 
-Currently, two official plugins are available:
+## Podstawowa funkcjonalność
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+-   Użytkownik może dodawać nowe zadanie po uzupełnieniu tytuły i opisu zadania oraz potwierdzeniu klikająć przycisk "ADD TASK" lub klawisz `Enter`
+-   Użytkownik może oznaczyć zadanie jako wykonane lub nie klikając na nie, zostanie ono przeniesione do odpowiedniej sekcji: "In progress" dla zadań nie wykonanych oraz "Done" dla zadań wykonanych
+-   Użytkownik może edytować treść zadań nie wykonanych klikając przycisk "Edit task" będzie można wtedy wprowadzić nowy tytuł oraz opis oraz potwierdzić przyciskiem "Confirm" lub klawiszem `Enter`. Jeżeli nie zostaną podane nowe dane i użytkownik potwierdzi, zadanie będzie miało treść z przed edycji. Kliknięcie poza obszar edytowanego zadania również anuluje edytowanie.
+-   Użytkownik może usuwać zadanie nie wykonane klikając przycisk "Delete task".

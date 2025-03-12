@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import "./TaskList.css";
 
 export default function TaskList({ taskElementsList, setTaskElementsList }) {
@@ -28,6 +28,7 @@ export default function TaskList({ taskElementsList, setTaskElementsList }) {
 
 function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
     const editRef = useRef(null);
+    const [orignalValues, setOrignalValues] = useState();
     function handleNameChange(taskId, value) {
         setTaskElementsList(
             taskElementsList.map((task) =>
@@ -52,6 +53,10 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
                     : task
             )
         );
+        const task = taskElementsList.find((t) => t.id === taskId);
+        setOrignalValues({
+            [taskId]: { name: task.name, desc: task.desc },
+        });
     }
 
     function handleDelete(taskId) {
@@ -64,6 +69,8 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
                 setTaskElementsList(
                     taskElementsList.map((task) => ({
                         ...task,
+                        name: orignalValues[task.id].name,
+                        desc: orignalValues[task.id].desc,
                         editable: false,
                     }))
                 );
@@ -73,7 +80,7 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
         return () => {
             document.removeEventListener("click", handleOutsideClick);
         };
-    }, [taskElementsList, setTaskElementsList]);
+    }, [taskElementsList, setTaskElementsList, orignalValues]);
 
     let toDoElementsList = taskElementsList.filter((t) => t.isDone === false);
     return (
