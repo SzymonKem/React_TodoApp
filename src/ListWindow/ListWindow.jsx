@@ -29,6 +29,11 @@ export default function ListWindow() {
         setTaskNameInput("");
         setTaskDescInput("");
     }
+    function handleKeyDown(e) {
+        if (e.key === "Enter" && taskNameInput !== "" && taskDescInput !== "") {
+            handleAddClick();
+        }
+    }
     return (
         <div className="listWindow">
             <div className="inputs">
@@ -36,30 +41,14 @@ export default function ListWindow() {
                     type="text"
                     value={taskNameInput}
                     onChange={handleNameChange}
-                    onKeyDown={(e) => {
-                        if (
-                            e.key === "Enter" &&
-                            taskNameInput !== "" &&
-                            taskDescInput !== ""
-                        ) {
-                            handleAddClick();
-                        }
-                    }}
+                    onKeyDown={handleKeyDown}
                     placeholder="Add a task name"
                 />
                 <input
                     type="text"
                     value={taskDescInput}
                     onChange={handleDescChange}
-                    onKeyDown={(e) => {
-                        if (
-                            e.key === "Enter" &&
-                            taskNameInput !== "" &&
-                            taskDescInput !== ""
-                        ) {
-                            handleAddClick();
-                        }
-                    }}
+                    onKeyDown={handleKeyDown}
                     placeholder="Add a task description"
                 />
 
