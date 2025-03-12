@@ -9,11 +9,15 @@
     font-family: "Roboto Condensed", sans-serif;
 
 }
-body{
-    background-color: var(--black);
+
+#root{
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+body{
+    background-color: var(--black);
 }
 
 h1{
@@ -22,9 +26,4 @@ h1{
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 4em;
-}
-
-
-.done > h2{
-    text-decoration: line-through;
 }

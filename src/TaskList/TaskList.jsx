@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useRef, useEffect } from "react";
+import "./TaskList.css";
 
 export default function TaskList({ taskElementsList, setTaskElementsList }) {
     function handleDone(taskId) {
@@ -10,11 +11,13 @@ export default function TaskList({ taskElementsList, setTaskElementsList }) {
     }
     return (
         <div className="taskList">
+            <h1>In progress: </h1>
             <ToDoList
                 taskElementsList={taskElementsList}
                 setTaskElementsList={setTaskElementsList}
                 doneChange={handleDone}
             />
+            <h1>Done</h1>
             <DoneList
                 taskElementsList={taskElementsList}
                 doneChange={handleDone}
@@ -24,36 +27,54 @@ export default function TaskList({ taskElementsList, setTaskElementsList }) {
 }
 
 function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
-    const [currentName, setcurrentName] = useState({ name: "", desc: "" });
+    const editRef = useRef(null);
     function handleNameChange(taskId, value) {
-        // taskElementsList.map((task) =>
-        //     task.id === taskId ? { ...task, name: value } : task
-        // );
-        setcurrentName({ ...currentName, name: value });
+        setTaskElementsList(
+            taskElementsList.map((task) =>
+                task.id === taskId ? { ...task, name: value } : task
+            )
+        );
     }
+
     function handleDescChange(taskId, value) {
-        // taskElementsList.map((task) =>
-        //     task.id === taskId ? { ...task, desc: value } : task
-        // );
-        setcurrentName({ ...currentName, desc: value });
+        setTaskElementsList(
+            taskElementsList.map((task) =>
+                task.id === taskId ? { ...task, desc: value } : task
+            )
+        );
     }
+
     function handleEdit(taskId) {
         setTaskElementsList(
             taskElementsList.map((task) =>
                 task.id === taskId
-                    ? {
-                          ...task,
-                          name: currentName.name || task.name,
-                          desc: currentName.desc || task.desc,
-                          editable: !task.editable,
-                      }
+                    ? { ...task, editable: !task.editable }
                     : task
             )
         );
     }
+
     function handleDelete(taskId) {
         setTaskElementsList(taskElementsList.filter((t) => t.id !== taskId));
     }
+
+    useEffect(() => {
+        function handleOutsideClick(e) {
+            if (editRef.current && !editRef.current.contains(e.target)) {
+                setTaskElementsList(
+                    taskElementsList.map((task) => ({
+                        ...task,
+                        editable: false,
+                    }))
+                );
+            }
+        }
+        document.addEventListener("click", handleOutsideClick);
+        return () => {
+            document.removeEventListener("click", handleOutsideClick);
+        };
+    }, [taskElementsList, setTaskElementsList]);
+
     let toDoElementsList = taskElementsList.filter((t) => t.isDone === false);
     return (
         <ul className="toDoList">
@@ -69,6 +90,7 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
                             <p>{t.desc}</p>
                             <div className="taskELementButtons">
                                 <button
+                                    className="edit"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         handleEdit(t.id);
@@ -77,6 +99,7 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
                                     <span>Edit task</span>
                                 </button>
                                 <button
+                                    className="delete"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         handleDelete(t.id);
@@ -87,24 +110,35 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
                             </div>
                         </>
                     ) : (
-                        <>
+                        <div className="editing" ref={editRef}>
                             <input
                                 type="text"
                                 placeholder={t.name}
                                 onClick={(e) => e.stopPropagation()}
-                                onChange={(e) => {
-                                    handleNameChange(t.id, e.target.value);
+                                onChange={(e) =>
+                                    handleNameChange(t.id, e.target.value)
+                                }
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        handleEdit(t.id);
+                                    }
                                 }}
                             />
                             <input
                                 type="text"
                                 placeholder={t.desc}
                                 onClick={(e) => e.stopPropagation()}
-                                onChange={(e) => {
-                                    handleDescChange(t.id, e.target.value);
+                                onChange={(e) =>
+                                    handleDescChange(t.id, e.target.value)
+                                }
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        handleEdit(t.id);
+                                    }
                                 }}
                             />
                             <button
+                                className="confirm"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     handleEdit(t.id);
@@ -112,7 +146,7 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
                             >
                                 <span>Confirm</span>
                             </button>
-                        </>
+                        </div>
                     )}
                 </li>
             ))}

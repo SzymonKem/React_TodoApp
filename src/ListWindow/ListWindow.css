@@ -1,10 +1,27 @@
 @import url("../Index/index.css");
 
+.listWindow{
+    width: 100%;
+}
+
 .inputs{
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    width: 80%;
+    margin: auto;
+}
+
+.inputs > input{
+    padding: 10px;
+    transition: 0.5s;
+    box-shadow: 3px 3px 12px 0px rgba(214, 218, 255, 1);
+}
+
+.inputs > input:focus{
+    background-color: rgb(146, 153, 234);
+    box-shadow: 3px 3px 12px 0px rgb(146, 153, 234);
 }
 
 .inputs > :first-child{
@@ -13,10 +30,44 @@
     outline: none;
     border: none;
     border-radius: 20px;
+    font-weight: bold;
+    padding: 10px;
 }
-
 
 .inputs > :nth-child(2){
     font-size: 1.3em;
+    background-color: var(--light-blue);
+    outline: none;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    padding: 10px;
 }
 
+.inputs > button{
+    width: 25%;
+    max-width: 25%;
+    background-color: rgb(60, 254, 189);
+    font-size: 1.5em;
+    border-radius: 20px;
+    box-shadow: 3px 3px 12px 0px rgb(60, 254, 189);
+    border: none;
+    color: rgb(23, 83, 46);
+    border: rgb(23, 83, 46) 3px solid;
+    font-weight: bold;
+    transition: 0.5s;
+}
+
+.inputs > button:hover{
+    background-color: rgb(63, 254, 60);
+    box-shadow: 3px 3px 12px 0px rgb(63, 254, 60);
+}
+
+.inputs > button:disabled{
+    opacity: 0.3;
+}
+
+.inputs > button:disabled:hover{
+    background-color: rgb(60, 254, 189);
+    box-shadow: none;
+}
