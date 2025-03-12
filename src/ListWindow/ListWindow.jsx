@@ -1,13 +1,10 @@
 import { useState } from "react";
-import { useRef } from "react";
 import TaskList from "../TaskList/TaskList";
 import "./ListWindow.css";
 
 let nextId = 0;
 
 export default function ListWindow() {
-    const nameRef = useRef(null);
-    const descRef = useRef(null);
     let initialState = [];
     const [taskElementsList, setTaskELementsList] = useState(initialState);
     const [taskNameInput, setTaskNameInput] = useState("");
@@ -29,8 +26,6 @@ export default function ListWindow() {
                 editable: false,
             },
         ]);
-        nameRef.current.value = "";
-        descRef.current.value = "";
         setTaskNameInput("");
         setTaskDescInput("");
     }
@@ -51,7 +46,6 @@ export default function ListWindow() {
                         }
                     }}
                     placeholder="Add a task name"
-                    ref={nameRef}
                 />
                 <input
                     type="text"
@@ -67,7 +61,6 @@ export default function ListWindow() {
                         }
                     }}
                     placeholder="Add a task description"
-                    ref={descRef}
                 />
 
                 <button

@@ -17,7 +17,7 @@ export default function TaskList({ taskElementsList, setTaskElementsList }) {
                 setTaskElementsList={setTaskElementsList}
                 doneChange={handleDone}
             />
-            <h1>Done</h1>
+            <h1>Done:</h1>
             <DoneList
                 taskElementsList={taskElementsList}
                 doneChange={handleDone}

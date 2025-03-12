@@ -1,12 +1,12 @@
 @import url("../Index/index.css");
 
-.taskList{
+.taskList {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-ul{
+ul {
     padding: 0;
     width: 100%;
     display: flex;
@@ -15,7 +15,7 @@ ul{
     gap: 15px;
 }
 
-li{
+li {
     width: 35%;
     max-width: 80%;
     display: flex;
@@ -23,65 +23,67 @@ li{
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    word-break: break-all;
+    word-break: break-word;
     border-radius: 20px;
     padding: 0;
     background-color: var(--purple);
     border: 3px solid var(--gray-blue);
 }
 
-p{
+p {
     margin-top: 0;
-    text-wrap: wrap;
-    max-width: 100%;
     padding: 20px;
+    max-width: 100%;
+    word-wrap: break-word;
 }
 
-.delete{
+.delete,
+.edit {
     width: 50%;
-    background-color: rgb(254, 60, 60);
     font-size: 1.5em;
-    box-shadow: 3px 3px 12px 0px rgb(254, 60, 60);
-    border: none;
-    color: rgb(83, 23, 23);
     font-weight: bold;
+    border: none;
+    padding: 5px 10px;
+    transition: 0.5s;
+}
+
+.delete {
+    background-color: rgb(254, 60, 60);
+    color: rgb(83, 23, 23);
+    box-shadow: 3px 3px 12px rgb(254, 60, 60);
     margin: 0 10px 10px 0;
     border-radius: 0 20px 20px 0;
-    transition: 0.5s;
 }
 
-.delete:hover{
+.delete:hover {
     background-color: rgb(161, 0, 0);
-    box-shadow: 3px 3px 12px 0px rgb(161,0,0);
+    box-shadow: 3px 3px 12px rgb(161, 0, 0);
 }
 
-.edit{
-    width: 50%;
+.edit {
     background-color: rgb(60, 180, 254);
-    font-size: 1.5em;
-    box-shadow: -3px 3px 12px 0px rgb(60, 180, 254);
-    border: none;
     color: rgb(23, 44, 83);
-    font-weight: bold;
+    box-shadow: -3px 3px 12px rgb(60, 180, 254);
     margin: 0 0 10px 10px;
     border-radius: 20px 0 0 20px;
-    transition: 0.5s;
 }
 
-.edit:hover{
+.edit:hover {
     background-color: rgb(60, 121, 254);
-    box-shadow: -3px 3px 12px 0px rgb(60, 121, 254);
+    box-shadow: -3px 3px 12px rgb(60, 121, 254);
 }
 
-.taskELementButtons{
+.taskELementButtons {
     width: 100%;
     display: flex;
-    justify-content: space-between}
+    justify-content: space-between;
+}
 
-.doneList > li{
+.doneList > li {
     position: relative;
-}      
-.doneList > li::after{
+}
+
+.doneList > li::after {
     position: absolute;
     left: -5%;
     top: 50%;
@@ -89,18 +91,14 @@ p{
     background: #c00;
     content: "";
     width: 110%;
-    display: block;
 }
 
-.done > h2{
+.done > h2,
+.done > p {
     text-decoration: line-through;
 }
 
-.done > p{
-    text-decoration: line-through;
-}
-
-.editing{
+.editing {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -108,34 +106,36 @@ p{
     padding: 15px;
 }
 
-.editing > input{
+.editing > input {
     padding: 10px;
-    transition: 0.5s;
-    box-shadow: 3px 3px 12px 0px var(--light-blue);
     font-size: 1.3em;
     background-color: var(--black);
     color: white;
-    outline: none;
     border: none;
     border-radius: 20px;
-    font-weight: bold;
-    padding: 10px;
+    box-shadow: 3px 3px 12px var(--light-blue);
+    outline: none;
+    transition: 0.5s;
 }
 
-.editing > button{
+.editing > :first-child{
+    font-weight: bold;
+}
+
+.editing > button {
     background-color: rgb(60, 180, 254);
     font-size: 1.5em;
-    box-shadow: 3px 3px 12px 0px rgb(60, 180, 254);
+    font-weight: bold;
     border: none;
     color: rgb(23, 44, 83);
-    font-weight: bold;
-    margin: 10px;
-    border-radius: 20px;
-    transition: 0.5s;
     padding: 5px;
+    border-radius: 20px;
+    margin: 10px;
+    box-shadow: 3px 3px 12px rgb(60, 180, 254);
+    transition: 0.5s;
 }
 
-.editing > button:hover{
+.editing > button:hover {
     background-color: rgb(60, 121, 254);
-    box-shadow: -3px 3px 12px 0px rgb(60, 121, 254);
+    box-shadow: 3px 3px 12px rgb(60, 121, 254);
 }
