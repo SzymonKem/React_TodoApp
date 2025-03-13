@@ -68,7 +68,7 @@ export default function TaskList({
 
 function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
     const editRef = useRef(null);
-    const [orignalValues, setOrignalValues] = useState();
+    const [originalValues, setoriginalValues] = useState();
     function handleNameChange(taskId, value) {
         setTaskElementsList((prevTaskElementsList) =>
             prevTaskElementsList.map((task) =>
@@ -94,7 +94,7 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
             )
         );
         const task = taskElementsList.find((t) => t.id === taskId);
-        setOrignalValues({
+        setoriginalValues({
             [taskId]: { name: task.name, desc: task.desc },
         });
     }
@@ -115,8 +115,8 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
                 setTaskElementsList((prevTaskElementsList) =>
                     prevTaskElementsList.map((task) => ({
                         ...task,
-                        name: orignalValues[task.id]?.name || task.name,
-                        desc: orignalValues[task.id]?.desc || task.desc,
+                        name: originalValues[task.id].name || task.name,
+                        desc: originalValues[task.id].desc || task.desc,
                         editable: false,
                     }))
                 );
@@ -126,7 +126,7 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
         return () => {
             document.removeEventListener("click", handleOutsideClick);
         };
-    }, [taskElementsList, setTaskElementsList, orignalValues]);
+    }, [taskElementsList, setTaskElementsList, originalValues]);
 
     let toDoElementsList = taskElementsList.filter((t) => t.isDone === false);
     return (
