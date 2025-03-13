@@ -7,11 +7,20 @@ export default function TaskList({
     renderItems,
 }) {
     function handleDone(taskId) {
+        const newTask = {
+            ...taskElementsList[taskId],
+            isDone: !taskElementsList[taskId].isDone,
+        };
         setTaskElementsList((prevTaskElementsList) =>
             prevTaskElementsList.map((task) =>
-                task.id === taskId ? { ...task, isDone: !task.isDone } : task
+                task.id === taskId ? newTask : task
             )
         );
+        fetch("http://localhost:3000/", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newTask),
+        });
     }
     let content;
     switch (renderItems) {
@@ -85,18 +94,25 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
         const newName = editNameRef.current.value.trim();
         const newDesc = editDescRef.current.value.trim();
 
+        const editedTask = {
+            ...taskElementsList[taskId],
+            name: newName !== "" ? newName : taskElementsList[taskId].name,
+            desc: newDesc !== "" ? newDesc : taskElementsList[taskId].desc,
+            editable: false,
+        };
+
         setTaskElementsList((prevTaskElementsList) =>
             prevTaskElementsList.map((task) =>
-                task.id === taskId
-                    ? {
-                          ...task,
-                          name: newName !== "" ? newName : task.name,
-                          desc: newDesc !== "" ? newDesc : task.desc,
-                          editable: !task.editable,
-                      }
-                    : task
+                task.id === taskId ? editedTask : task
             )
         );
+        if (newName !== "" || newDesc !== "") {
+            fetch("http://localhost:3000/", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(editedTask),
+            });
+        }
     }
 
     function handleDelete(taskId) {
