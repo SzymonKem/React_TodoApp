@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import "./TaskList.css";
 
 export default function TaskList({
@@ -68,22 +68,8 @@ export default function TaskList({
 
 function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
     const editRef = useRef(null);
-    const [originalValues, setoriginalValues] = useState();
-    function handleNameChange(taskId, value) {
-        setTaskElementsList((prevTaskElementsList) =>
-            prevTaskElementsList.map((task) =>
-                task.id === taskId ? { ...task, name: value } : task
-            )
-        );
-    }
-
-    function handleDescChange(taskId, value) {
-        setTaskElementsList((prevTaskElementsList) =>
-            prevTaskElementsList.map((task) =>
-                task.id === taskId ? { ...task, desc: value } : task
-            )
-        );
-    }
+    const editNameRef = useRef(null);
+    const editDescRef = useRef(null);
 
     function handleEdit(taskId) {
         setTaskElementsList((prevTaskElementsList) =>
@@ -93,10 +79,24 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
                     : task
             )
         );
-        const task = taskElementsList.find((t) => t.id === taskId);
-        setoriginalValues({
-            [taskId]: { name: task.name, desc: task.desc },
-        });
+    }
+
+    function handleConfirm(taskId) {
+        const newName = editNameRef.current.value.trim();
+        const newDesc = editDescRef.current.value.trim();
+
+        setTaskElementsList((prevTaskElementsList) =>
+            prevTaskElementsList.map((task) =>
+                task.id === taskId
+                    ? {
+                          ...task,
+                          name: newName !== "" ? newName : task.name,
+                          desc: newDesc !== "" ? newDesc : task.desc,
+                          editable: !task.editable,
+                      }
+                    : task
+            )
+        );
     }
 
     function handleDelete(taskId) {
@@ -115,8 +115,6 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
                 setTaskElementsList((prevTaskElementsList) =>
                     prevTaskElementsList.map((task) => ({
                         ...task,
-                        name: originalValues[task.id].name || task.name,
-                        desc: originalValues[task.id].desc || task.desc,
                         editable: false,
                     }))
                 );
@@ -126,7 +124,7 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
         return () => {
             document.removeEventListener("click", handleOutsideClick);
         };
-    }, [taskElementsList, setTaskElementsList, originalValues]);
+    }, [taskElementsList, setTaskElementsList]);
 
     let toDoElementsList = taskElementsList.filter((t) => t.isDone === false);
     return (
@@ -167,26 +165,28 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
                             <input
                                 type="text"
                                 placeholder={t.name}
+                                ref={editNameRef}
                                 onClick={(e) => e.stopPropagation()}
-                                onChange={(e) =>
-                                    handleNameChange(t.id, e.target.value)
-                                }
+                                // onChange={(e) =>
+                                //     handleNameChange(t.id, e.target.value)
+                                // }
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
-                                        handleEdit(t.id);
+                                        handleConfirm(t.id);
                                     }
                                 }}
                             />
                             <input
                                 type="text"
                                 placeholder={t.desc}
+                                ref={editDescRef}
                                 onClick={(e) => e.stopPropagation()}
-                                onChange={(e) =>
-                                    handleDescChange(t.id, e.target.value)
-                                }
+                                // onChange={(e) =>
+                                //     handleDescChange(t.id, e.target.value)
+                                // }
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
-                                        handleEdit(t.id);
+                                        handleConfirm(t.id);
                                     }
                                 }}
                             />
@@ -194,7 +194,7 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
                                 className="confirm"
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    handleEdit(t.id);
+                                    handleConfirm(t.id);
                                 }}
                             >
                                 <span>Confirm</span>
