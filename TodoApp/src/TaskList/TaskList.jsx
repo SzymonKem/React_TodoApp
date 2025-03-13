@@ -100,7 +100,13 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
     }
 
     function handleDelete(taskId) {
+        const taskToDelete = taskElementsList.filter((t) => t.id === taskId);
         setTaskElementsList(taskElementsList.filter((t) => t.id !== taskId));
+        fetch("http://localhost:3000/", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(taskToDelete),
+        });
     }
 
     useEffect(() => {

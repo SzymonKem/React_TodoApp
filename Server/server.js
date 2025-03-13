@@ -11,7 +11,14 @@ app.use(express.json())
 app.post('/', (req, res) => {
     tasksArray.push(req.body);
     console.log(tasksArray)
-    res.send(console.log("Succcess"))
+    res.send(console.log("Succcessfully added"))
+})
+
+app.delete('/', (req,res) => {
+    taskToDelete = tasksArray.indexOf(req.body)
+    tasksArray.splice(taskToDelete, 1)
+    console.log(tasksArray)
+    res.send(console.log("Succesfully deleted"))
 })
 
 app.listen(port, () => {
