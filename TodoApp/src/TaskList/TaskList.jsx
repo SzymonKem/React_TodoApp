@@ -108,6 +108,7 @@ function DoneList({ taskElementsList, doneChange }) {
         <ul className="doneList">
             {doneElementsList.map((t) => (
                 <Task
+                    key={t.id}
                     task={t}
                     taskElementsList={taskElementsList}
                     doneChange={doneChange}
@@ -143,26 +144,28 @@ function Task({ task, taskElementsList, setTaskElementsList, doneChange }) {
         >
             <h2>{task.name}</h2>
             <p>{task.desc}</p>
-            <div className="taskELementButtons">
-                <button
-                    className="edit"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        handleEdit(task.id);
-                    }}
-                >
-                    <span>Edit task</span>
-                </button>
-                <button
-                    className="delete"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(task.id);
-                    }}
-                >
-                    <span>Delete task</span>
-                </button>
-            </div>
+            {!task.isDone ? (
+                <div className="taskELementButtons">
+                    <button
+                        className="edit"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleEdit(task.id);
+                        }}
+                    >
+                        <span>Edit task</span>
+                    </button>
+                    <button
+                        className="delete"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(task.id);
+                        }}
+                    >
+                        <span>Delete task</span>
+                    </button>
+                </div>
+            ) : null}
         </li>
     );
 }

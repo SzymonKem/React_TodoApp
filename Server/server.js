@@ -9,33 +9,52 @@ let collection = db.collection("tasks");
 app.use(cors());
 app.use(express.json());
 
+app.post("/reset", async (req, res) => {
+    if (!db) {
+        res.sendStatus(500);
+    } else {
+        await collection.deleteMany({});
+        res.sendStatus(200);
+    }
+});
+
 app.post("/", async (req, res) => {
     if (!db) {
         res.sendStatus(500);
     } else {
         await collection.insertOne({ ...req.body, _id: req.body.id });
-    }
-    console.log("Added. New collection: ");
-    for await (const task of collection.find({})) {
-        console.log(task);
+        console.log("Added. New collection: ");
+        for await (const task of collection.find({})) {
+            console.log(task);
+        }
+        res.sendStatus(200);
     }
 });
 
 app.delete("/", async (req, res) => {
-    console.log(req.body.id);
-    await collection.deleteOne({ _id: req.body.id });
-    console.log("Deleted. New collection: ");
-    for await (const task of collection.find({})) {
-        console.log(task);
+    if (!db) {
+        res.sendStatus(500);
+    } else {
+        await collection.deleteOne({ _id: req.body.id });
+        console.log("Deleted. New collection: ");
+        for await (const task of collection.find({})) {
+            console.log(task);
+        }
+        res.sendStatus(200);
     }
 });
 
 app.put("/", async (req, res) => {
-    const editedTask = req.body;
-    await collection.replaceOne({ _id: editedTask.id }, editedTask);
-    console.log("Edited. New collection: ");
-    for await (const task of collection.find({})) {
-        console.log(task);
+    if (!db) {
+        res.sendStatus(500);
+    } else {
+        const editedTask = req.body;
+        await collection.replaceOne({ _id: editedTask.id }, editedTask);
+        console.log("Edited. New collection: ");
+        for await (const task of collection.find({})) {
+            console.log(task);
+        }
+        res.sendStatus(200);
     }
 });
 
