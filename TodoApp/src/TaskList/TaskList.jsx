@@ -76,10 +76,48 @@ export default function TaskList({
 }
 
 function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
-    const editRef = useRef(null);
-    const editNameRef = useRef(null);
-    const editDescRef = useRef(null);
+    let toDoElementsList = taskElementsList.filter((t) => t.isDone === false);
+    return (
+        <ul className="toDoList">
+            {toDoElementsList.map((t) =>
+                !t.editable ? (
+                    <Task
+                        key={t.id}
+                        task={t}
+                        taskElementsList={taskElementsList}
+                        setTaskElementsList={setTaskElementsList}
+                        doneChange={doneChange}
+                    />
+                ) : (
+                    <EditableTask
+                        key={t.id}
+                        task={t}
+                        taskElementsList={taskElementsList}
+                        setTaskElementsList={setTaskElementsList}
+                        doneChange={doneChange}
+                    />
+                )
+            )}
+        </ul>
+    );
+}
 
+function DoneList({ taskElementsList, doneChange }) {
+    let doneElementsList = taskElementsList.filter((t) => t.isDone === true);
+    return (
+        <ul className="doneList">
+            {doneElementsList.map((t) => (
+                <Task
+                    task={t}
+                    taskElementsList={taskElementsList}
+                    doneChange={doneChange}
+                />
+            ))}
+        </ul>
+    );
+}
+
+function Task({ task, taskElementsList, setTaskElementsList, doneChange }) {
     function handleEdit(taskId) {
         setTaskElementsList((prevTaskElementsList) =>
             prevTaskElementsList.map((task) =>
@@ -89,7 +127,55 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
             )
         );
     }
+    function handleDelete(taskId) {
+        setTaskElementsList(taskElementsList.filter((t) => t.id !== taskId));
+        fetch("http://localhost:3000/", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: taskId }),
+        });
+    }
+    return (
+        <li
+            key={task.id}
+            onClick={() => doneChange(task.id)}
+            className="inProgress"
+        >
+            <h2>{task.name}</h2>
+            <p>{task.desc}</p>
+            <div className="taskELementButtons">
+                <button
+                    className="edit"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleEdit(task.id);
+                    }}
+                >
+                    <span>Edit task</span>
+                </button>
+                <button
+                    className="delete"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(task.id);
+                    }}
+                >
+                    <span>Delete task</span>
+                </button>
+            </div>
+        </li>
+    );
+}
 
+function EditableTask({
+    task,
+    taskElementsList,
+    setTaskElementsList,
+    doneChange,
+}) {
+    const editRef = useRef(null);
+    const editNameRef = useRef(null);
+    const editDescRef = useRef(null);
     function handleConfirm(taskId) {
         const newName = editNameRef.current.value.trim();
         const newDesc = editDescRef.current.value.trim();
@@ -114,17 +200,6 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
             });
         }
     }
-
-    function handleDelete(taskId) {
-        // const taskToDelete = taskElementsList.filter((t) => t.id === taskId);
-        setTaskElementsList(taskElementsList.filter((t) => t.id !== taskId));
-        fetch("http://localhost:3000/", {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: taskId }),
-        });
-    }
-
     useEffect(() => {
         function handleOutsideClick(e) {
             if (editRef.current && !editRef.current.contains(e.target)) {
@@ -141,96 +216,45 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
             document.removeEventListener("click", handleOutsideClick);
         };
     }, [taskElementsList, setTaskElementsList]);
-
-    let toDoElementsList = taskElementsList.filter((t) => t.isDone === false);
     return (
-        <ul className="toDoList">
-            {toDoElementsList.map((t) => (
-                <li
-                    key={t.id}
-                    onClick={() => doneChange(t.id)}
-                    className="inProgress"
+        <li
+            key={task.id}
+            onClick={() => doneChange(task.id)}
+            className="inProgress"
+        >
+            <div className="editing" ref={editRef}>
+                <input
+                    type="text"
+                    placeholder={task.name}
+                    ref={editNameRef}
+                    onClick={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            handleConfirm(task.id);
+                        }
+                    }}
+                />
+                <input
+                    type="text"
+                    placeholder={task.desc}
+                    ref={editDescRef}
+                    onClick={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            handleConfirm(task.id);
+                        }
+                    }}
+                />
+                <button
+                    className="confirm"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleConfirm(task.id);
+                    }}
                 >
-                    {!t.editable ? (
-                        <>
-                            <h2>{t.name}</h2>
-                            <p>{t.desc}</p>
-                            <div className="taskELementButtons">
-                                <button
-                                    className="edit"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleEdit(t.id);
-                                    }}
-                                >
-                                    <span>Edit task</span>
-                                </button>
-                                <button
-                                    className="delete"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleDelete(t.id);
-                                    }}
-                                >
-                                    <span>Delete task</span>
-                                </button>
-                            </div>
-                        </>
-                    ) : (
-                        <div className="editing" ref={editRef}>
-                            <input
-                                type="text"
-                                placeholder={t.name}
-                                ref={editNameRef}
-                                onClick={(e) => e.stopPropagation()}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                        handleConfirm(t.id);
-                                    }
-                                }}
-                            />
-                            <input
-                                type="text"
-                                placeholder={t.desc}
-                                ref={editDescRef}
-                                onClick={(e) => e.stopPropagation()}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                        handleConfirm(t.id);
-                                    }
-                                }}
-                            />
-                            <button
-                                className="confirm"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleConfirm(t.id);
-                                }}
-                            >
-                                <span>Confirm</span>
-                            </button>
-                        </div>
-                    )}
-                </li>
-            ))}
-        </ul>
-    );
-}
-
-function DoneList({ taskElementsList, doneChange }) {
-    let doneElementsList = taskElementsList.filter((t) => t.isDone === true);
-    return (
-        <ul className="doneList">
-            {doneElementsList.map((t) => (
-                <li
-                    key={t.id}
-                    onClick={() => doneChange(t.id)}
-                    className="done"
-                >
-                    <h2>{t.name}</h2>
-                    <p>{t.desc}</p>
-                </li>
-            ))}
-        </ul>
+                    <span>Confirm</span>
+                </button>
+            </div>
+        </li>
     );
 }

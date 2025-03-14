@@ -23,7 +23,7 @@ app.post("/", async (req, res) => {
 
 app.delete("/", async (req, res) => {
     console.log(req.body.id);
-    await collection.deleteOne({ id: req.body.id });
+    await collection.deleteOne({ _id: req.body.id });
     console.log("Deleted. New collection: ");
     for await (const task of collection.find({})) {
         console.log(task);
@@ -32,7 +32,7 @@ app.delete("/", async (req, res) => {
 
 app.put("/", async (req, res) => {
     const editedTask = req.body;
-    await collection.replaceOne({ id: editedTask.id }, editedTask);
+    await collection.replaceOne({ _id: editedTask.id }, editedTask);
     console.log("Edited. New collection: ");
     for await (const task of collection.find({})) {
         console.log(task);

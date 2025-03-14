@@ -7,7 +7,7 @@ let nextId = 0;
 export default function ListWindow() {
     let initialState = [];
     const [renderItems, setRenderItems] = useState("all");
-    const [taskElementsList, setTaskELementsList] = useState(initialState);
+    const [taskElementsList, setTaskElementsList] = useState(initialState);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const nameRef = useRef(null);
     const descRef = useRef(null);
@@ -24,7 +24,7 @@ export default function ListWindow() {
             desc: descRef.current.value.trim(),
             editable: false,
         };
-        setTaskELementsList([...taskElementsList, newTask]);
+        setTaskElementsList([...taskElementsList, newTask]);
         fetch("http://localhost:3000/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -91,7 +91,7 @@ export default function ListWindow() {
             </div>
             <TaskList
                 taskElementsList={taskElementsList}
-                setTaskElementsList={setTaskELementsList}
+                setTaskElementsList={setTaskElementsList}
                 renderItems={renderItems}
             />
         </div>
