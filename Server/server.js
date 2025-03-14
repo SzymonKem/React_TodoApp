@@ -1,49 +1,44 @@
-const express = require('express')
-const cors = require('cors')
-const app = express()
-const port = 3000
+import express from "express";
+import cors from "cors";
+import db from "./db/conn.js";
+const app = express();
+const port = 3000;
 
-let tasksArray = []
+let collection = db.collection("tasks");
 
-app.use(cors())
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
 
-app.post('/', (req, res) => {
-    tasksArray.push(req.body);
-    console.log(tasksArray)
-    res.send(console.log("Succcessfully added"))
-})
+app.post("/", async (req, res) => {
+    if (!db) {
+        res.sendStatus(500);
+    } else {
+        await collection.insertOne({ ...req.body, _id: req.body.id });
+    }
+    console.log("Added. New collection: ");
+    for await (const task of collection.find({})) {
+        console.log(task);
+    }
+});
 
-app.delete('/', (req,res) => {
-    taskToDelete = tasksArray.indexOf(req.body)
-    tasksArray.splice(taskToDelete, 1)
-    console.log(tasksArray)
-    res.send(console.log("Succesfully deleted"))
-})
+app.delete("/", async (req, res) => {
+    console.log(req.body.id);
+    await collection.deleteOne({ id: req.body.id });
+    console.log("Deleted. New collection: ");
+    for await (const task of collection.find({})) {
+        console.log(task);
+    }
+});
 
-app.put('/', (req,res) => {
-    editedTask = req.body;
-    tasksArray.forEach(element => {
-        if(element.id == editedTask.id){
-            if(element.name !== editedTask.name){
-                element.name = editedTask.name
-                console.log("name changed")
-            }
-            if (element.desc !== editedTask.desc) {
-                element.desc = editedTask.desc
-                console.log("desc changed")
-            }
-            if (element.isDone !== editedTask.isDone) {
-                element.isDone = editedTask.isDone
-                console.log("isdone changed")
-            }
-        }
-    });
-    console.log(tasksArray)
-    res.send(console.log("Successfully edited"))
-})
+app.put("/", async (req, res) => {
+    const editedTask = req.body;
+    await collection.replaceOne({ id: editedTask.id }, editedTask);
+    console.log("Edited. New collection: ");
+    for await (const task of collection.find({})) {
+        console.log(task);
+    }
+});
 
 app.listen(port, () => {
-    console.log(`Listening on port ${port}`)
-    console.log(tasksArray)
-})
+    console.log(`Listening on port ${port}`);
+});

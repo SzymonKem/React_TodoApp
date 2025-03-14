@@ -116,12 +116,12 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
     }
 
     function handleDelete(taskId) {
-        const taskToDelete = taskElementsList.filter((t) => t.id === taskId);
+        // const taskToDelete = taskElementsList.filter((t) => t.id === taskId);
         setTaskElementsList(taskElementsList.filter((t) => t.id !== taskId));
         fetch("http://localhost:3000/", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(taskToDelete),
+            body: JSON.stringify({ id: taskId }),
         });
     }
 
@@ -183,9 +183,6 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
                                 placeholder={t.name}
                                 ref={editNameRef}
                                 onClick={(e) => e.stopPropagation()}
-                                // onChange={(e) =>
-                                //     handleNameChange(t.id, e.target.value)
-                                // }
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
                                         handleConfirm(t.id);
@@ -197,9 +194,6 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
                                 placeholder={t.desc}
                                 ref={editDescRef}
                                 onClick={(e) => e.stopPropagation()}
-                                // onChange={(e) =>
-                                //     handleDescChange(t.id, e.target.value)
-                                // }
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
                                         handleConfirm(t.id);
