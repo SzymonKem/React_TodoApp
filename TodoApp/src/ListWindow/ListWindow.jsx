@@ -1,16 +1,26 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import TaskList from "../TaskList/TaskList";
 import "./ListWindow.css";
 
-let nextId = 0;
-
 export default function ListWindow() {
-    let initialState = [];
     const [renderItems, setRenderItems] = useState("all");
-    const [taskElementsList, setTaskElementsList] = useState(initialState);
+    const [taskElementsList, setTaskElementsList] = useState([]);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+    const [nextId, setNextId] = useState(0);
     const nameRef = useRef(null);
     const descRef = useRef(null);
+    useEffect(() => {
+        if (taskElementsList.length === 0) {
+            fetch("http://localhost:3000/")
+                .then((response) => response.json())
+                .then((data) => {
+                    setTaskElementsList(data);
+                    if (data.length > 0) {
+                        setNextId(data[data.length - 1].id + 1);
+                    }
+                });
+        }
+    }, []);
     function handleInput() {
         const isInputEmpty = !nameRef.current.value || !descRef.current.value;
         setIsButtonEnabled(!isInputEmpty);
@@ -18,12 +28,13 @@ export default function ListWindow() {
 
     function handleAddClick() {
         const newTask = {
-            id: nextId++,
+            id: nextId,
             isDone: false,
             name: nameRef.current.value.trim(),
             desc: descRef.current.value.trim(),
             editable: false,
         };
+        setNextId(nextId + 1);
         setTaskElementsList([...taskElementsList, newTask]);
         fetch("http://localhost:3000/", {
             method: "POST",

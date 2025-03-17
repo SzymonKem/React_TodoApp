@@ -9,12 +9,12 @@ let collection = db.collection("tasks");
 app.use(cors());
 app.use(express.json());
 
-app.post("/reset", async (req, res) => {
+app.get("/", async (req, res) => {
     if (!db) {
         res.sendStatus(500);
     } else {
-        await collection.deleteMany({});
-        res.sendStatus(200);
+        const foundTasks = await collection.find({}).toArray();
+        res.send(JSON.stringify(foundTasks));
     }
 });
 
