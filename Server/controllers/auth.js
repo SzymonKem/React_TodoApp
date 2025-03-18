@@ -34,30 +34,30 @@ export async function Login(req, res) {
     try {
         const existingUser = await User.findOne({ username });
         if (!existingUser) {
-            res.status(400).json({
+            return res.status(400).json({
                 status: "failed",
                 data: [],
                 message: "This user doesn't exist in the database",
             });
         }
         const userPassword = existingUser.password;
-        console.log(existingUser);
-        console.log(password);
-        console.log(userPassword);
+        // console.log(existingUser);
+        // console.log(password);
+        // console.log(userPassword);
         const isPasswordValid = await bcrypt.compare(
             req.body.password,
             userPassword
         );
         if (!isPasswordValid) {
-            res.status(401).json({
+            return res.status(401).json({
                 status: "failed",
                 data: [],
                 message: "Invalid password",
             });
         }
-        res.status(200).json({
+        return res.status(200).json({
             status: "success",
-            data: [username],
+            data: [{ username }],
             message: "Logged in",
         });
     } catch (err) {
@@ -68,4 +68,25 @@ export async function Login(req, res) {
         });
     }
     res.end();
+}
+
+export async function getUser(req, res) {
+    const username = req.query.username;
+    console.log(username);
+    try {
+        const foundUser = await User.findOne({
+            username: username,
+        });
+        const foundUserId = foundUser.toObject()._id;
+        res.status(200).json({
+            status: "success",
+            data: { userId: foundUserId },
+            message: "Succesfully got userId",
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: "error",
+            message: "An unexpected error happened " + err.message,
+        });
+    }
 }

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import TaskList from "../TaskList/TaskList";
 import "./ListWindow.css";
 
-export default function ListWindow() {
+export default function ListWindow({ currentUser }) {
     const [renderItems, setRenderItems] = useState("all");
     const [taskElementsList, setTaskElementsList] = useState([]);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
@@ -11,12 +11,13 @@ export default function ListWindow() {
     const descRef = useRef(null);
     useEffect(() => {
         if (taskElementsList.length === 0) {
-            fetch("http://localhost:3000/")
+            fetch("http://localhost:3000/tasks/?userId=" + currentUser)
                 .then((response) => response.json())
                 .then((data) => {
-                    setTaskElementsList(data);
-                    if (data.length > 0) {
-                        setNextId(data[data.length - 1].id + 1);
+                    console.log(data);
+                    setTaskElementsList(data.data);
+                    if (data.data.length > 0) {
+                        setNextId(data.data[data.data.length - 1].id + 1);
                     }
                 });
         }
@@ -29,6 +30,7 @@ export default function ListWindow() {
     function handleAddClick() {
         const newTask = {
             id: nextId,
+            userId: currentUser,
             isDone: false,
             name: nameRef.current.value.trim(),
             desc: descRef.current.value.trim(),
@@ -36,7 +38,7 @@ export default function ListWindow() {
         };
         setNextId(nextId + 1);
         setTaskElementsList([...taskElementsList, newTask]);
-        fetch("http://localhost:3000/", {
+        fetch("http://localhost:3000/tasks", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newTask),
@@ -103,6 +105,7 @@ export default function ListWindow() {
             <TaskList
                 taskElementsList={taskElementsList}
                 setTaskElementsList={setTaskElementsList}
+                currentUser={currentUser}
                 renderItems={renderItems}
             />
         </div>

@@ -5,10 +5,16 @@ import LoginPage from "../../LoginPage/LoginPage.jsx";
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [currentUserId, setCurrentUserId] = useState(null);
     if (isLoggedIn) {
-        return <ListWindow />;
+        return <ListWindow currentUser={currentUserId} />;
     } else {
-        return <LoginPage setIsLoggedIn={setIsLoggedIn} />;
+        return (
+            <LoginPage
+                setIsLoggedIn={setIsLoggedIn}
+                setCurrentUserId={setCurrentUserId}
+            />
+        );
     }
 }
 

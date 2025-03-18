@@ -3,6 +3,7 @@ import cors from "cors";
 import { mongoose } from "mongoose";
 import Router from "./routes/index.js";
 import Auth from "./routes/auth.js";
+import Tasks from "./routes/tasks.js";
 const server = express();
 const port = 3000;
 
@@ -14,8 +15,9 @@ mongoose
     .then(console.log("Connected to database"))
     .catch((err) => console.log(err));
 
-Router(server);
+// server.use("/", Router);
 server.use("/auth", Auth);
+server.use("/tasks", Tasks);
 
 // app.get("/", async (req, res) => {
 //     if (!db) {

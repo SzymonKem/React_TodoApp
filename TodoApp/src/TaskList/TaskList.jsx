@@ -5,6 +5,7 @@ export default function TaskList({
     taskElementsList,
     setTaskElementsList,
     renderItems,
+    currentUser,
 }) {
     function handleDone(taskId) {
         const newTask = {
@@ -16,7 +17,7 @@ export default function TaskList({
                 task.id === taskId ? newTask : task
             )
         );
-        fetch("http://localhost:3000/", {
+        fetch("http://localhost:3000/tasks", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newTask),
@@ -29,12 +30,14 @@ export default function TaskList({
                 <>
                     <h1>In progress: </h1>
                     <ToDoList
+                        currentUser={currentUser}
                         taskElementsList={taskElementsList}
                         setTaskElementsList={setTaskElementsList}
                         doneChange={handleDone}
                     />
                     <h1>Done:</h1>
                     <DoneList
+                        currentUser={currentUser}
                         taskElementsList={taskElementsList}
                         doneChange={handleDone}
                     />
@@ -46,6 +49,7 @@ export default function TaskList({
                 <>
                     <h1>In progress: </h1>
                     <ToDoList
+                        currentUser={currentUser}
                         taskElementsList={taskElementsList}
                         setTaskElementsList={setTaskElementsList}
                         doneChange={handleDone}
@@ -58,6 +62,7 @@ export default function TaskList({
                 <>
                     <h1>Done:</h1>
                     <DoneList
+                        currentUser={currentUser}
                         taskElementsList={taskElementsList}
                         doneChange={handleDone}
                     />
@@ -75,7 +80,13 @@ export default function TaskList({
     );
 }
 
-function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
+function ToDoList({
+    taskElementsList,
+    setTaskElementsList,
+    doneChange,
+    currentUser,
+}) {
+    console.log("taskElementsList log from toDoList" + taskElementsList);
     let toDoElementsList = taskElementsList.filter((t) => t.isDone === false);
     return (
         <ul className="toDoList">
@@ -84,6 +95,7 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
                     <Task
                         key={t.id}
                         task={t}
+                        currentUser={currentUser}
                         taskElementsList={taskElementsList}
                         setTaskElementsList={setTaskElementsList}
                         doneChange={doneChange}
@@ -92,6 +104,7 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
                     <EditableTask
                         key={t.id}
                         task={t}
+                        currentUser={currentUser}
                         taskElementsList={taskElementsList}
                         setTaskElementsList={setTaskElementsList}
                         doneChange={doneChange}
@@ -102,7 +115,7 @@ function ToDoList({ taskElementsList, setTaskElementsList, doneChange }) {
     );
 }
 
-function DoneList({ taskElementsList, doneChange }) {
+function DoneList({ taskElementsList, doneChange, currentUser }) {
     let doneElementsList = taskElementsList.filter((t) => t.isDone === true);
     return (
         <ul className="doneList">
@@ -110,6 +123,7 @@ function DoneList({ taskElementsList, doneChange }) {
                 <Task
                     key={t.id}
                     task={t}
+                    currentUser={currentUser}
                     taskElementsList={taskElementsList}
                     doneChange={doneChange}
                 />
@@ -118,7 +132,13 @@ function DoneList({ taskElementsList, doneChange }) {
     );
 }
 
-function Task({ task, taskElementsList, setTaskElementsList, doneChange }) {
+function Task({
+    task,
+    taskElementsList,
+    setTaskElementsList,
+    doneChange,
+    currentUser,
+}) {
     function handleEdit(taskId) {
         setTaskElementsList((prevTaskElementsList) =>
             prevTaskElementsList.map((task) =>
@@ -130,10 +150,10 @@ function Task({ task, taskElementsList, setTaskElementsList, doneChange }) {
     }
     function handleDelete(taskId) {
         setTaskElementsList(taskElementsList.filter((t) => t.id !== taskId));
-        fetch("http://localhost:3000/", {
+        fetch("http://localhost:3000/tasks", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: taskId }),
+            body: JSON.stringify({ id: taskId, userId: currentUser }),
         });
     }
     return (
@@ -196,7 +216,7 @@ function EditableTask({
             )
         );
         if (newName !== "" || newDesc !== "") {
-            fetch("http://localhost:3000/", {
+            fetch("http://localhost:3000/tasks", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(editedTask),
