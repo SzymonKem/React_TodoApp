@@ -1,13 +1,15 @@
 import "./App.css";
 import ListWindow from "../ListWindow/ListWindow.jsx";
+import { useState } from "react";
+import LoginPage from "../../LoginPage/LoginPage.jsx";
 
 function App() {
-    return (
-        <>
-            <h1>ToDo list</h1>
-            <ListWindow />
-        </>
-    );
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    if (isLoggedIn) {
+        return <ListWindow />;
+    } else {
+        return <LoginPage setIsLoggedIn={setIsLoggedIn} />;
+    }
 }
 
 export default App;
