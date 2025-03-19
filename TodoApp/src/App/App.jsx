@@ -7,7 +7,12 @@ function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [currentUserId, setCurrentUserId] = useState(null);
     if (isLoggedIn) {
-        return <ListWindow currentUser={currentUserId} />;
+        return (
+            <ListWindow
+                currentUser={currentUserId}
+                setIsLoggedIn={setIsLoggedIn}
+            />
+        );
     } else {
         return (
             <LoginPage

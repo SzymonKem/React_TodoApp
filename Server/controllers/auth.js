@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+// import session, { Cookie } from "express-session";
 import bcrypt from "bcrypt";
 
 export async function Register(req, res) {
@@ -14,9 +15,13 @@ export async function Register(req, res) {
             });
         }
         const savedUser = await newUser.save();
+        const foundUser = await User.findOne({
+            username: username,
+        });
+        const foundUserId = foundUser.toObject()._id;
         res.status(200).json({
             status: "success",
-            data: [{ username }],
+            data: [{ username, foundUserId }],
             message: "Your account has been successfully created",
         });
     } catch (err) {
@@ -41,13 +46,7 @@ export async function Login(req, res) {
             });
         }
         const userPassword = existingUser.password;
-        // console.log(existingUser);
-        // console.log(password);
-        // console.log(userPassword);
-        const isPasswordValid = await bcrypt.compare(
-            req.body.password,
-            userPassword
-        );
+        const isPasswordValid = await bcrypt.compare(password, userPassword);
         if (!isPasswordValid) {
             return res.status(401).json({
                 status: "failed",
@@ -55,9 +54,29 @@ export async function Login(req, res) {
                 message: "Invalid password",
             });
         }
-        return res.status(200).json({
+        const foundUserId = existingUser.toObject()._id;
+        const sessionId = req.session.id;
+        console.log(sessionId);
+        if (req.body.isChecked) {
+            res.cookie("sessionId", sessionId, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "None",
+                maxAge: req.body.isChecked ? 7 * 24 * 60 * 60 * 1000 : null,
+            });
+            console.log("setting cookie: ", sessionId);
+            console.log(foundUserId);
+            res.cookie("user", foundUserId, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "None",
+                maxAge: req.body.isChecked ? 7 * 24 * 60 * 60 * 1000 : null,
+            });
+            console.log("setting cookie: ", foundUserId);
+        }
+        res.status(200).json({
             status: "success",
-            data: [{ username }],
+            data: [{ username, foundUserId, sessionId }],
             message: "Logged in",
         });
     } catch (err) {
@@ -70,23 +89,51 @@ export async function Login(req, res) {
     res.end();
 }
 
-export async function getUser(req, res) {
-    const username = req.query.username;
-    console.log(username);
-    try {
-        const foundUser = await User.findOne({
-            username: username,
+export async function CheckRemembered(req, res) {
+    console.log(req.cookies);
+    if (!req.cookies.sessionId) {
+        res.status(401).json({
+            status: "not remembered",
+            data: [false],
+            message: "user not remembered. please log in",
         });
-        const foundUserId = foundUser.toObject()._id;
+    } else {
         res.status(200).json({
             status: "success",
-            data: { userId: foundUserId },
-            message: "Succesfully got userId",
-        });
-    } catch (err) {
-        res.status(500).json({
-            status: "error",
-            message: "An unexpected error happened " + err.message,
+            data: [true, req.cookies.user],
+            message: "User remembered",
         });
     }
 }
+
+export async function Logout(req, res) {
+    if (req.cookies !== null) {
+        res.clearCookie("sessionId");
+        res.clearCookie("user");
+    }
+    res.status(200).json({
+        status: "success",
+        message: "Successfully logged out",
+    });
+}
+
+// export async function getUser(req, res) {
+//     const username = req.query.username;
+//     console.log(username);
+//     try {
+//         const foundUser = await User.findOne({
+//             username: username,
+//         });
+//         const foundUserId = foundUser.toObject()._id;
+//         res.status(200).json({
+//             status: "success",
+//             data: { userId: foundUserId },
+//             message: "Succesfully got userId",
+//         });
+//     } catch (err) {
+//         res.status(500).json({
+//             status: "error",
+//             message: "An unexpected error happened " + err.message,
+//         });
+//     }
+// }

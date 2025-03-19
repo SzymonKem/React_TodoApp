@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import TaskList from "../TaskList/TaskList";
 import "./ListWindow.css";
 
-export default function ListWindow({ currentUser }) {
+export default function ListWindow({ currentUser, setIsLoggedIn }) {
     const [renderItems, setRenderItems] = useState("all");
     const [taskElementsList, setTaskElementsList] = useState([]);
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
@@ -10,26 +10,38 @@ export default function ListWindow({ currentUser }) {
     const nameRef = useRef(null);
     const descRef = useRef(null);
     useEffect(() => {
-        if (taskElementsList.length === 0) {
-            fetch("http://localhost:3000/tasks/?userId=" + currentUser)
-                .then((response) => response.json())
-                .then((data) => {
+        const getTasks = async () => {
+            if (taskElementsList.length === 0) {
+                try {
+                    const response = await fetch(
+                        "http://localhost:3000/tasks/?userId=" + currentUser
+                    );
+                    const data = await response.json();
                     console.log(data);
-                    setTaskElementsList(data.data);
-                    if (data.data.length > 0) {
-                        setNextId(data.data[data.data.length - 1].id + 1);
-                    } else {
-                        setNextId(0);
-                    }
-                });
-        }
+                    const receivedTaskList = data.data;
+                    setTaskElementsList(receivedTaskList);
+
+                    setNextId(
+                        receivedTaskList.length > 0
+                            ? receivedTaskList[receivedTaskList.length - 1].id +
+                                  1
+                            : 0
+                    );
+                } catch (error) {
+                    console.error("Error fetching tasks:", error);
+                }
+            }
+        };
+
+        getTasks();
     }, []);
+
     function handleInput() {
         const isInputEmpty = !nameRef.current.value || !descRef.current.value;
         setIsButtonEnabled(!isInputEmpty);
     }
 
-    function handleAddClick() {
+    async function handleAddClick() {
         const newTask = {
             id: nextId,
             userId: currentUser,
@@ -40,7 +52,7 @@ export default function ListWindow({ currentUser }) {
         };
         setNextId(nextId + 1);
         setTaskElementsList([...taskElementsList, newTask]);
-        fetch("http://localhost:3000/tasks", {
+        await fetch("http://localhost:3000/tasks", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newTask),
@@ -48,6 +60,13 @@ export default function ListWindow({ currentUser }) {
         nameRef.current.value = "";
         descRef.current.value = "";
         handleInput();
+    }
+    async function handleLogoutClick() {
+        await fetch("http://localhost:3000/auth/logout", {
+            method: "DELETE",
+            credentials: "include",
+        });
+        setIsLoggedIn(false);
     }
     function handleKeyDown(e) {
         if (
@@ -61,6 +80,9 @@ export default function ListWindow({ currentUser }) {
     return (
         <div className="listWindow">
             {console.log("rendered listwindow")}
+            <button className="logout" onClick={handleLogoutClick}>
+                Logout
+            </button>
             <div className="inputs">
                 <input
                     type="text"
