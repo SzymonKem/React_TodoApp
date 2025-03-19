@@ -29,7 +29,9 @@ export default function LoginPage({ setIsLoggedIn, setCurrentUserId }) {
                 setCurrentUserId(data.data.userId);
                 setIsLoggedIn(true);
             })
-            .catch(console.log("Error"));
+            .catch((error) => {
+                console.log(error.message);
+            });
     }
     return (
         <form onSubmit={handleSubmit} method="post">

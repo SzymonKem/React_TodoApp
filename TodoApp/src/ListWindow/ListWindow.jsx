@@ -18,6 +18,8 @@ export default function ListWindow({ currentUser }) {
                     setTaskElementsList(data.data);
                     if (data.data.length > 0) {
                         setNextId(data.data[data.data.length - 1].id + 1);
+                    } else {
+                        setNextId(0);
                     }
                 });
         }

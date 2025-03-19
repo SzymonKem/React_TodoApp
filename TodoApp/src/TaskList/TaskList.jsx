@@ -8,9 +8,12 @@ export default function TaskList({
     currentUser,
 }) {
     function handleDone(taskId) {
+        const currentTask = taskElementsList.find(
+            (element) => element.id == taskId
+        );
         const newTask = {
-            ...taskElementsList[taskId],
-            isDone: !taskElementsList[taskId].isDone,
+            ...currentTask,
+            isDone: !currentTask.isDone,
         };
         setTaskElementsList((prevTaskElementsList) =>
             prevTaskElementsList.map((task) =>
@@ -86,7 +89,7 @@ function ToDoList({
     doneChange,
     currentUser,
 }) {
-    console.log("taskElementsList log from toDoList" + taskElementsList);
+    // console.log("taskElementsList log from toDoList" + taskElementsList);
     let toDoElementsList = taskElementsList.filter((t) => t.isDone === false);
     return (
         <ul className="toDoList">
@@ -202,11 +205,14 @@ function EditableTask({
     function handleConfirm(taskId) {
         const newName = editNameRef.current.value.trim();
         const newDesc = editDescRef.current.value.trim();
-
+        console.log(taskElementsList);
+        const currentTask = taskElementsList.find(
+            (element) => element.id == taskId
+        );
         const editedTask = {
-            ...taskElementsList[taskId],
-            name: newName !== "" ? newName : taskElementsList[taskId].name,
-            desc: newDesc !== "" ? newDesc : taskElementsList[taskId].desc,
+            ...currentTask,
+            name: newName !== "" ? newName : currentTask.name,
+            desc: newDesc !== "" ? newDesc : currentTask.desc,
             editable: false,
         };
 
@@ -215,6 +221,7 @@ function EditableTask({
                 task.id === taskId ? editedTask : task
             )
         );
+        console.log(editedTask);
         if (newName !== "" || newDesc !== "") {
             fetch("http://localhost:3000/tasks", {
                 method: "PUT",
