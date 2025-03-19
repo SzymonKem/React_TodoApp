@@ -18,7 +18,11 @@ export async function Register(req, res) {
         const foundUser = await User.findOne({
             username: username,
         });
+        const sessionId = req.session.id;
         const foundUserId = foundUser.toObject()._id;
+        if (req.body.isChecked) {
+            setCookies(sessionId, foundUserId, res);
+        }
         res.status(200).json({
             status: "success",
             data: [{ username, foundUserId }],
@@ -58,21 +62,7 @@ export async function Login(req, res) {
         const sessionId = req.session.id;
         console.log(sessionId);
         if (req.body.isChecked) {
-            res.cookie("sessionId", sessionId, {
-                httpOnly: true,
-                secure: true,
-                sameSite: "None",
-                maxAge: req.body.isChecked ? 7 * 24 * 60 * 60 * 1000 : null,
-            });
-            console.log("setting cookie: ", sessionId);
-            console.log(foundUserId);
-            res.cookie("user", foundUserId, {
-                httpOnly: true,
-                secure: true,
-                sameSite: "None",
-                maxAge: req.body.isChecked ? 7 * 24 * 60 * 60 * 1000 : null,
-            });
-            console.log("setting cookie: ", foundUserId);
+            setCookies(sessionId, foundUserId, res);
         }
         res.status(200).json({
             status: "success",
@@ -87,6 +77,23 @@ export async function Login(req, res) {
         });
     }
     res.end();
+}
+
+function setCookies(sessionId, userId, res) {
+    res.cookie("sessionId", sessionId, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+    console.log("setting cookie: ", sessionId);
+    res.cookie("user", userId, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+    console.log("setting cookie: ", userId);
 }
 
 export async function CheckRemembered(req, res) {
