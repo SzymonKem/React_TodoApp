@@ -86,14 +86,14 @@ function setCookies(sessionId, userId, res) {
         sameSite: "None",
         maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    console.log("setting cookie: ", sessionId);
+    // console.log("setting cookie: ", sessionId);
     res.cookie("user", userId, {
         httpOnly: true,
         secure: true,
         sameSite: "None",
         maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    console.log("setting cookie: ", userId);
+    // console.log("setting cookie: ", userId);
 }
 
 export async function CheckRemembered(req, res) {

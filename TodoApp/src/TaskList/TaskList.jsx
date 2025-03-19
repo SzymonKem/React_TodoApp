@@ -77,7 +77,7 @@ export default function TaskList({
     }
     return (
         <div className="taskList">
-            {console.log("rendered tasklist")}
+            {/* {console.log("rendered tasklist")} */}
             {content}
         </div>
     );

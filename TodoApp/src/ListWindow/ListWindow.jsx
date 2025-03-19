@@ -79,7 +79,7 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
     }
     return (
         <div className="listWindow">
-            {console.log("rendered listwindow")}
+            {/* {console.log("rendered listwindow")} */}
             <button className="logout" onClick={handleLogoutClick}>
                 Logout
             </button>

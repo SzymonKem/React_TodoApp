@@ -38,7 +38,7 @@ export async function Add(req, res) {
 
 export async function Edit(req, res) {
     const task = req.body;
-    console.log(task);
+    // console.log(task);
     try {
         const editedTask = await Task.replaceOne(
             { id: task.id, userId: task.userId },
