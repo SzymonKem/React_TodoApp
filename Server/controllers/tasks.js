@@ -5,7 +5,6 @@ export async function GetTasks(req, res) {
         const gotTasks = await Task.find({
             userId: req.query.userId,
         });
-        // console.log(gotTasks);
         res.status(200).json({
             status: "success",
             data: gotTasks,
@@ -23,7 +22,7 @@ export async function Add(req, res) {
     const task = req.body;
     try {
         const newTask = new Task(task);
-        const savedTask = await newTask.save();
+        await newTask.save();
         res.status(200).json({
             status: "success",
             message: "successfully added task",
@@ -38,12 +37,8 @@ export async function Add(req, res) {
 
 export async function Edit(req, res) {
     const task = req.body;
-    // console.log(task);
     try {
-        const editedTask = await Task.replaceOne(
-            { id: task.id, userId: task.userId },
-            task
-        );
+        await Task.replaceOne({ id: task.id, userId: task.userId }, task);
         res.status(200).json({
             status: "success",
             message: "Succesfully edited task",
@@ -59,7 +54,7 @@ export async function Edit(req, res) {
 export async function Delete(req, res) {
     const task = req.body;
     try {
-        const deletedTask = await Task.deleteOne({
+        await Task.deleteOne({
             id: task.id,
             userId: task.userId,
         });

@@ -42,6 +42,4 @@ router.post(
 router.post("/rememberedUser", CheckRemembered);
 router.delete("/logout", Logout);
 
-// router.get("/getuser", getUser);
-
 export default router;

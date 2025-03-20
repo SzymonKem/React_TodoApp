@@ -31,6 +31,7 @@ mongoose
     .then(console.log("Connected to database"))
     .catch((err) => console.log(err));
 
+Router(server);
 server.use("/auth", Auth);
 server.use("/tasks", Tasks);
 
