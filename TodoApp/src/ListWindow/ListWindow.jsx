@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import TaskList from "../TaskList/TaskList";
+import Sidebar from "../Sidebar/Sidebar";
 import "./ListWindow.css";
 
 export default function ListWindow({ currentUser, setIsLoggedIn }) {
@@ -34,19 +35,9 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
         getTasks();
     }, []);
 
-    // function handleKeyDown(e) {
-    //     if (
-    //         e.key === "Enter" &&
-    //         nameRef.current.value.trim() !== "" &&
-    //         descRef.current.value.trim() !== ""
-    //     ) {
-    //         handleAddClick();
-    //     }
-    // }
     return (
         <div className="listWindow">
-            {/* {console.log("rendered listwindow")} */}
-            <LogoutButton setIsLoggedIn={setIsLoggedIn} />
+            <Sidebar setIsLoggedIn={setIsLoggedIn} />
             <div className="inputs">
                 <TaskAddInputs
                     nextId={nextId}
@@ -64,21 +55,6 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
                 renderItems={renderItems}
             />
         </div>
-    );
-}
-
-function LogoutButton({ setIsLoggedIn }) {
-    async function handleLogoutClick() {
-        await fetch("http://localhost:3000/auth/logout", {
-            method: "DELETE",
-            credentials: "include",
-        });
-        setIsLoggedIn(false);
-    }
-    return (
-        <button className="logout" onClick={handleLogoutClick}>
-            Logout
-        </button>
     );
 }
 

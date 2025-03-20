@@ -1,7 +1,7 @@
 import "./App.css";
 import ListWindow from "../ListWindow/ListWindow.jsx";
 import { useState } from "react";
-import LoginPage from "../../LoginPage/LoginPage.jsx";
+import LoginPage from "../LoginPage/LoginPage.jsx";
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
