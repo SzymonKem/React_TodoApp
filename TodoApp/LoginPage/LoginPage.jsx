@@ -55,7 +55,7 @@ export default function LoginPage({ setIsLoggedIn, setCurrentUserId }) {
     }
 
     return (
-        <form onSubmit={handleSubmit} method="post">
+        <form onSubmit={handleSubmit} method="post" className="loginForm">
             <input type="text" placeholder="Username" ref={usernameRef} />
             <br />
             <input type="password" placeholder="Password" ref={passRef} />

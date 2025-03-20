@@ -5,10 +5,8 @@ import "./ListWindow.css";
 export default function ListWindow({ currentUser, setIsLoggedIn }) {
     const [renderItems, setRenderItems] = useState("all");
     const [taskElementsList, setTaskElementsList] = useState([]);
-    const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const [nextId, setNextId] = useState(0);
-    const nameRef = useRef(null);
-    const descRef = useRef(null);
+
     useEffect(() => {
         const getTasks = async () => {
             if (taskElementsList.length === 0) {
@@ -36,12 +34,70 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
         getTasks();
     }, []);
 
+    // function handleKeyDown(e) {
+    //     if (
+    //         e.key === "Enter" &&
+    //         nameRef.current.value.trim() !== "" &&
+    //         descRef.current.value.trim() !== ""
+    //     ) {
+    //         handleAddClick();
+    //     }
+    // }
+    return (
+        <div className="listWindow">
+            {/* {console.log("rendered listwindow")} */}
+            <LogoutButton setIsLoggedIn={setIsLoggedIn} />
+            <div className="inputs">
+                <TaskAddInputs
+                    nextId={nextId}
+                    currentUser={currentUser}
+                    setNextId={setNextId}
+                    taskElementsList={taskElementsList}
+                    setTaskElementsList={setTaskElementsList}
+                />
+                <Filters setRenderItems={setRenderItems} />
+            </div>
+            <TaskList
+                taskElementsList={taskElementsList}
+                setTaskElementsList={setTaskElementsList}
+                currentUser={currentUser}
+                renderItems={renderItems}
+            />
+        </div>
+    );
+}
+
+function LogoutButton({ setIsLoggedIn }) {
+    async function handleLogoutClick() {
+        await fetch("http://localhost:3000/auth/logout", {
+            method: "DELETE",
+            credentials: "include",
+        });
+        setIsLoggedIn(false);
+    }
+    return (
+        <button className="logout" onClick={handleLogoutClick}>
+            Logout
+        </button>
+    );
+}
+
+function TaskAddInputs({
+    nextId,
+    currentUser,
+    setNextId,
+    taskElementsList,
+    setTaskElementsList,
+}) {
+    const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+    const nameRef = useRef(null);
+    const descRef = useRef(null);
     function handleInput() {
         const isInputEmpty = !nameRef.current.value || !descRef.current.value;
         setIsButtonEnabled(!isInputEmpty);
     }
-
-    async function handleAddClick() {
+    async function handleAdd(e) {
+        e.preventDefault();
         const newTask = {
             id: nextId,
             userId: currentUser,
@@ -61,77 +117,59 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
         descRef.current.value = "";
         handleInput();
     }
-    async function handleLogoutClick() {
-        await fetch("http://localhost:3000/auth/logout", {
-            method: "DELETE",
-            credentials: "include",
-        });
-        setIsLoggedIn(false);
-    }
-    function handleKeyDown(e) {
-        if (
-            e.key === "Enter" &&
-            nameRef.current.value.trim() !== "" &&
-            descRef.current.value.trim() !== ""
-        ) {
-            handleAddClick();
-        }
-    }
     return (
-        <div className="listWindow">
-            {/* {console.log("rendered listwindow")} */}
-            <button className="logout" onClick={handleLogoutClick}>
-                Logout
-            </button>
-            <div className="inputs">
-                <input
-                    type="text"
-                    onInput={handleInput}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Add a task name"
-                    ref={nameRef}
-                />
-                <input
-                    type="text"
-                    onInput={handleInput}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Add a task description"
-                    ref={descRef}
-                />
-
-                <button onClick={handleAddClick} disabled={!isButtonEnabled}>
-                    ADD TASK
-                </button>
-                <div className="renderControls">
-                    <button
-                        onClick={() => {
-                            setRenderItems("all");
-                        }}
-                    >
-                        Show all tasks
-                    </button>
-                    <button
-                        onClick={() => {
-                            setRenderItems("inProgress");
-                        }}
-                    >
-                        Show tasks in progress
-                    </button>
-                    <button
-                        onClick={() => {
-                            setRenderItems("done");
-                        }}
-                    >
-                        Show done tasks
-                    </button>
-                </div>
-            </div>
-            <TaskList
-                taskElementsList={taskElementsList}
-                setTaskElementsList={setTaskElementsList}
-                currentUser={currentUser}
-                renderItems={renderItems}
+        <form method="post" onSubmit={handleAdd} className="taskAddForm">
+            <input
+                required
+                type="text"
+                onInput={handleInput}
+                // onKeyDown={handleKeyDown}
+                placeholder="Add a task name"
+                ref={nameRef}
             />
+            <input
+                required
+                type="text"
+                onInput={handleInput}
+                // onKeyDown={handleKeyDown}
+                placeholder="Add a task description"
+                ref={descRef}
+            />
+
+            <input
+                type="submit"
+                disabled={!isButtonEnabled}
+                value="ADD TASK"
+                className="taskAddFormSubmit"
+            />
+        </form>
+    );
+}
+
+function Filters({ setRenderItems }) {
+    return (
+        <div className="renderControls">
+            <button
+                onClick={() => {
+                    setRenderItems("all");
+                }}
+            >
+                Show all tasks
+            </button>
+            <button
+                onClick={() => {
+                    setRenderItems("inProgress");
+                }}
+            >
+                Show tasks in progress
+            </button>
+            <button
+                onClick={() => {
+                    setRenderItems("done");
+                }}
+            >
+                Show done tasks
+            </button>
         </div>
     );
 }

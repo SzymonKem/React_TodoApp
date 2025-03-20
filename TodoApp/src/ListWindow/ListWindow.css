@@ -13,7 +13,16 @@
     margin: auto;
 }
 
-.inputs > input {
+.taskAddForm{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 80%;
+    margin: auto;
+}
+
+.taskAddForm > input[type="text"] {
     padding: 10px;
     border: none;
     border-radius: 20px;
@@ -23,21 +32,21 @@
     transition: 0.5s;
 }
 
-.inputs > input:focus {
+.taskAddForm > input[type="text"]:focus {
     background-color: rgb(146, 153, 234);
     box-shadow: 3px 3px 12px rgb(146, 153, 234);
 }
 
-.inputs > :first-child {
+.taskAddForm > :first-child {
     font-size: 2em;
     font-weight: bold;
 }
 
-.inputs > :nth-child(2) {
+.taskAddForm > :nth-child(2) {
     font-size: 1.3em;
 }
 
-.inputs > button {
+.taskAddFormSubmit{
     width: 25%;
     max-width: 25%;
     background-color: rgb(60, 254, 189);
@@ -50,16 +59,16 @@
     transition: 0.5s;
 }
 
-.inputs > button:hover {
+.taskAddFormSubmit:hover {
     background-color: rgb(63, 254, 60);
     box-shadow: 3px 3px 12px rgb(63, 254, 60);
 }
 
-.inputs > button:disabled {
+.taskAddFormSubmit:disabled {
     opacity: 0.3;
 }
 
-.inputs > button:disabled:hover {
+.taskAddFormSubmit:disabled:hover {
     background-color: rgb(60, 254, 189);
     box-shadow: none;
 }

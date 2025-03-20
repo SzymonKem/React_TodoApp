@@ -7,7 +7,7 @@ export default function TaskList({
     renderItems,
     currentUser,
 }) {
-    function handleDone(taskId) {
+    async function handleDone(taskId) {
         const currentTask = taskElementsList.find(
             (element) => element.id == taskId
         );
@@ -20,11 +20,15 @@ export default function TaskList({
                 task.id === taskId ? newTask : task
             )
         );
-        fetch("http://localhost:3000/tasks", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(newTask),
-        });
+        try {
+            await fetch("http://localhost:3000/tasks", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newTask),
+            });
+        } catch (err) {
+            console.log(err.message);
+        }
     }
     let content;
     switch (renderItems) {
