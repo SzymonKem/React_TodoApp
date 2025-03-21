@@ -54,8 +54,8 @@ export async function GetTeamUsers(req, res) {
         const owner = await User.findOne({ _id: foundTeam.owner });
         const ownerId = owner._id;
         foundTeam.owner = owner.username;
-        console.log(foundTeam.owner);
-        console.log(ownerId);
+        // console.log(foundTeam.owner);
+        // console.log(ownerId);
 
         res.status(200).json({
             status: "success",
@@ -91,6 +91,28 @@ export async function AddUserToTeam(req, res) {
         return res.status(200).json({
             status: "success",
             message: "successfully added user to team",
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: "error",
+            message: "An unexpected error happened: " + err.message,
+        });
+    }
+}
+
+export async function DeleteUserFromTeam(req, res) {
+    console.log(req.body);
+    try {
+        const foundUser = await User.findOne({ username: req.body.user });
+        const idToDelete = foundUser._id.toString();
+        console.log(idToDelete);
+        await Team.updateOne(
+            { _id: req.body.teamId },
+            { $pull: { users: idToDelete } }
+        );
+        res.status(200).json({
+            status: "success",
+            message: "successfully removed user from team",
         });
     } catch (err) {
         res.status(500).json({
