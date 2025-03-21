@@ -1,21 +1,25 @@
 import "./Sidebar.css";
 import { useEffect, useState } from "react";
 
-export default function Sidebar({ setIsLoggedIn, setListOwner, currentUser }) {
+export default function Sidebar({
+    setIsLoggedIn,
+    setListOwner,
+    currentUser,
+    listOwner,
+}) {
     return (
-        <>
-            <div className="sidebar">
-                <h2>ToDo app</h2>
-                <LogoutButton setIsLoggedIn={setIsLoggedIn} />
-                <nav>
-                    <MyTasks />
-                    <Teams
-                        currentUser={currentUser}
-                        setListOwner={setListOwner}
-                    />
-                </nav>
-            </div>
-        </>
+        <div className="sidebar">
+            <h2>ToDo app</h2>
+            <LogoutButton setIsLoggedIn={setIsLoggedIn} />
+            <nav>
+                <MyTasks
+                    currentUser={currentUser}
+                    setListOwner={setListOwner}
+                />
+                <Teams currentUser={currentUser} setListOwner={setListOwner} />
+            </nav>
+            {listOwner.type === "team" && <UserList listOwner={listOwner} />}
+        </div>
     );
 }
 
@@ -34,12 +38,14 @@ function LogoutButton({ setIsLoggedIn }) {
     );
 }
 
-function MyTasks() {
+function MyTasks({ currentUser, setListOwner }) {
     return (
         <>
             <h2>My tasks</h2>
             <hr />
-            <a href="#">My tasklist</a>
+            <a href="#" onClick={() => setListOwner(currentUser)}>
+                My tasklist
+            </a>
         </>
     );
 }
@@ -149,5 +155,40 @@ function Teams({ currentUser, setListOwner }) {
                 )}
             </ul>
         </>
+    );
+}
+
+function UserList({ listOwner }) {
+    const [currentTeam, setCurrentTeam] = useState({ list: [], owner: "" });
+    useEffect(() => {
+        const getUserList = async () => {
+            try {
+                const response = await fetch(
+                    "http://localhost:3000/teams/getUsers?teamId=" +
+                        listOwner.id
+                );
+                const data = await response.json();
+                const list = data.data.users;
+                const owner = data.data.owner;
+                setCurrentTeam({ list: list, owner: owner });
+            } catch (err) {
+                console.log(err.message);
+            }
+        };
+        getUserList();
+    }, []);
+    return (
+        <div className="userListContainer">
+            {console.log(currentTeam)}
+            <h2>Owner:</h2>
+            <span>{currentTeam.owner}</span>
+            <h3>Users: </h3>
+            <hr />
+            <ul className="userList">
+                {currentTeam.list.map((user) => (
+                    <li key={user}>{user}</li>
+                ))}
+            </ul>
+        </div>
     );
 }

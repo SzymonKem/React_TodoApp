@@ -42,6 +42,7 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
                 setListOwner={setListOwner}
                 setTaskElementsList={setTaskElementsList}
                 currentUser={currentUser}
+                listOwner={listOwner}
             />
             <div className="inputs">
                 <TaskAddInputs
