@@ -18,7 +18,9 @@ export default function Sidebar({
                 />
                 <Teams currentUser={currentUser} setListOwner={setListOwner} />
             </nav>
-            {listOwner.type === "team" && <UserList listOwner={listOwner} />}
+            {listOwner.type === "team" && (
+                <UserList listOwner={listOwner} currentUser={currentUser} />
+            )}
         </div>
     );
 }
@@ -140,6 +142,7 @@ function Teams({ currentUser, setListOwner }) {
                         <input
                             required
                             type="text"
+                            placeholder="Team name"
                             onChange={(e) =>
                                 setcreationInputValue(e.target.value)
                             }
@@ -158,8 +161,14 @@ function Teams({ currentUser, setListOwner }) {
     );
 }
 
-function UserList({ listOwner }) {
-    const [currentTeam, setCurrentTeam] = useState({ list: [], owner: "" });
+function UserList({ listOwner, currentUser }) {
+    const [currentTeam, setCurrentTeam] = useState({
+        list: [],
+        owner: "",
+        ownerId: "",
+    });
+    const [addingUser, setAddingUser] = useState(false);
+    const [creationInputValue, setCreationInputValue] = useState("");
     useEffect(() => {
         const getUserList = async () => {
             try {
@@ -170,24 +179,85 @@ function UserList({ listOwner }) {
                 const data = await response.json();
                 const list = data.data.users;
                 const owner = data.data.owner;
-                setCurrentTeam({ list: list, owner: owner });
+                const ownerId = data.data.ownerId;
+                setCurrentTeam({ list: list, owner: owner, ownerId: ownerId });
             } catch (err) {
                 console.log(err.message);
             }
         };
         getUserList();
-    }, []);
+    }, [addingUser]);
+
+    async function handleUserAdd(listOwner, e) {
+        e.preventDefault();
+        try {
+            await fetch("http://localhost:3000/teams/addUser", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: creationInputValue.trim(),
+                    teamId: listOwner.id,
+                }),
+            });
+            setAddingUser(false);
+        } catch (err) {
+            console.log(err.message);
+        }
+    }
     return (
         <div className="userListContainer">
             {console.log(currentTeam)}
             <h2>Owner:</h2>
             <span>{currentTeam.owner}</span>
             <h3>Users: </h3>
+            {console.log(currentUser.id)}
+            {console.log(currentTeam.ownerId)}
+            {currentUser.id == currentTeam.ownerId && (
+                <a href="#" onClick={() => setAddingUser(true)}>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M12 4.5v15m7.5-7.5h-15"
+                        />
+                    </svg>
+                    <span>Add a user</span>
+                </a>
+            )}
             <hr />
             <ul className="userList">
                 {currentTeam.list.map((user) => (
                     <li key={user}>{user}</li>
                 ))}
+                {addingUser && (
+                    <form
+                        action="#"
+                        method="post"
+                        onSubmit={(e) => handleUserAdd(listOwner, e)}
+                    >
+                        <input
+                            required
+                            type="text"
+                            placeholder="username"
+                            onChange={(e) =>
+                                setCreationInputValue(e.target.value)
+                            }
+                        />
+                        <br />
+                        <input
+                            type="button"
+                            value="Cancel"
+                            onClick={() => setAddingUser(false)}
+                        />
+                        <input type="submit" value="Confirm" />
+                    </form>
+                )}
             </ul>
         </div>
     );
