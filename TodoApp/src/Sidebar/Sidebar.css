@@ -42,4 +42,16 @@ a > svg{
 a{
     color: white;
     text-decoration: none;
+    word-break: break-all;
+    text-wrap: wrap;
+}
+
+nav > ul{
+    margin-top: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+nav > ul > li{
+    margin-top: 10px;
 }

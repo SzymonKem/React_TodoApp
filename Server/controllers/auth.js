@@ -97,7 +97,6 @@ function setCookies(sessionId, userId, res) {
 }
 
 export async function CheckRemembered(req, res) {
-    console.log(req.cookies);
     if (!req.cookies.sessionId) {
         res.status(401).json({
             status: "not remembered",

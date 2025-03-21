@@ -4,8 +4,13 @@ const TaskSchema = new mongoose.Schema({
     id: {
         type: Number,
     },
-    userId: {
-        type: mongoose.Types.ObjectId,
+    owner: {
+        type: {
+            type: String,
+        },
+        id: {
+            type: mongoose.Types.ObjectId,
+        },
     },
     isDone: {
         type: Boolean,

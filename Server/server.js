@@ -6,6 +6,7 @@ import { mongoose } from "mongoose";
 import Router from "./routes/index.js";
 import Auth from "./routes/auth.js";
 import Tasks from "./routes/tasks.js";
+import Teams from "./routes/teams.js";
 const server = express();
 const port = 3000;
 
@@ -34,6 +35,7 @@ mongoose
 Router(server);
 server.use("/auth", Auth);
 server.use("/tasks", Tasks);
+server.use("/teams", Teams);
 
 server.listen(port, () => {
     console.log(`Listening on port ${port}`);

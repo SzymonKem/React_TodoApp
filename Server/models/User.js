@@ -10,6 +10,9 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: "Your password is required",
     },
+    teams: {
+        type: Array,
+    },
 });
 
 UserSchema.pre("save", function (next) {

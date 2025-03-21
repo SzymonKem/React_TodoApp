@@ -7,41 +7,46 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
     const [renderItems, setRenderItems] = useState("all");
     const [taskElementsList, setTaskElementsList] = useState([]);
     const [nextId, setNextId] = useState(0);
+    const [listOwner, setListOwner] = useState(currentUser);
 
     useEffect(() => {
         const getTasks = async () => {
-            if (taskElementsList.length === 0) {
-                try {
-                    const response = await fetch(
-                        "http://localhost:3000/tasks/?userId=" + currentUser
-                    );
-                    const data = await response.json();
-                    console.log(data);
-                    const receivedTaskList = data.data;
-                    setTaskElementsList(receivedTaskList);
+            // if (taskElementsList.length === 0) {
+            try {
+                const response = await fetch(
+                    "http://localhost:3000/tasks/?owner=" +
+                        JSON.stringify(listOwner)
+                );
+                const data = await response.json();
+                console.log(data);
+                const receivedTaskList = data.data;
+                setTaskElementsList(receivedTaskList);
 
-                    setNextId(
-                        receivedTaskList.length > 0
-                            ? receivedTaskList[receivedTaskList.length - 1].id +
-                                  1
-                            : 0
-                    );
-                } catch (error) {
-                    console.error("Error fetching tasks:", error);
-                }
+                setNextId(
+                    receivedTaskList.length > 0
+                        ? receivedTaskList[receivedTaskList.length - 1].id + 1
+                        : 0
+                );
+            } catch (error) {
+                console.error("Error fetching tasks:", error);
             }
         };
 
         getTasks();
-    }, []);
+    }, [listOwner]);
 
     return (
         <div className="listWindow">
-            <Sidebar setIsLoggedIn={setIsLoggedIn} />
+            <Sidebar
+                setIsLoggedIn={setIsLoggedIn}
+                setListOwner={setListOwner}
+                setTaskElementsList={setTaskElementsList}
+                currentUser={currentUser}
+            />
             <div className="inputs">
                 <TaskAddInputs
                     nextId={nextId}
-                    currentUser={currentUser}
+                    listOwner={listOwner}
                     setNextId={setNextId}
                     taskElementsList={taskElementsList}
                     setTaskElementsList={setTaskElementsList}
@@ -51,7 +56,7 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
             <TaskList
                 taskElementsList={taskElementsList}
                 setTaskElementsList={setTaskElementsList}
-                currentUser={currentUser}
+                listOwner={listOwner}
                 renderItems={renderItems}
             />
         </div>
@@ -60,7 +65,7 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
 
 function TaskAddInputs({
     nextId,
-    currentUser,
+    listOwner,
     setNextId,
     taskElementsList,
     setTaskElementsList,
@@ -76,7 +81,7 @@ function TaskAddInputs({
         e.preventDefault();
         const newTask = {
             id: nextId,
-            userId: currentUser,
+            owner: listOwner,
             isDone: false,
             name: nameRef.current.value.trim(),
             desc: descRef.current.value.trim(),

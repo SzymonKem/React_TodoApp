@@ -6,7 +6,7 @@
     align-items: center;
 }
 
-ul {
+.doneList, .toDoList {
     padding: 0;
     width: 100%;
     display: flex;
@@ -15,7 +15,7 @@ ul {
     gap: 15px;
 }
 
-li {
+.task {
     width: 35%;
     max-width: 80%;
     display: flex;
@@ -30,7 +30,7 @@ li {
     border: 3px solid var(--gray-blue);
 }
 
-li > h2{
+.task > h2{
     text-align: center;
 }
 

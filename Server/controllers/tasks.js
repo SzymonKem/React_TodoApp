@@ -1,9 +1,12 @@
+import mongoose from "mongoose";
 import Task from "../models/Task.js";
 
 export async function GetTasks(req, res) {
+    const owner = JSON.parse(req.query.owner);
+    owner.id = new mongoose.Types.ObjectId(owner.id);
     try {
         const gotTasks = await Task.find({
-            userId: req.query.userId,
+            owner: owner,
         });
         res.status(200).json({
             status: "success",
@@ -37,8 +40,9 @@ export async function Add(req, res) {
 
 export async function Edit(req, res) {
     const task = req.body;
+    task.owner.id = new mongoose.Types.ObjectId(task.owner.id);
     try {
-        await Task.replaceOne({ id: task.id, userId: task.userId }, task);
+        await Task.replaceOne({ id: task.id, owner: task.owner }, task);
         res.status(200).json({
             status: "success",
             message: "Succesfully edited task",
@@ -53,10 +57,12 @@ export async function Edit(req, res) {
 
 export async function Delete(req, res) {
     const task = req.body;
+    task.owner.id = new mongoose.Types.ObjectId(task.owner.id);
+    console.log(task);
     try {
         await Task.deleteOne({
             id: task.id,
-            userId: task.userId,
+            owner: task.owner,
         });
         res.status(200).json({
             status: "success",

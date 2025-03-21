@@ -5,7 +5,7 @@ export default function TaskList({
     taskElementsList,
     setTaskElementsList,
     renderItems,
-    currentUser,
+    listOwner,
 }) {
     async function handleDone(taskId) {
         const currentTask = taskElementsList.find(
@@ -37,14 +37,14 @@ export default function TaskList({
                 <>
                     <h1>In progress: </h1>
                     <ToDoList
-                        currentUser={currentUser}
+                        listOwner={listOwner}
                         taskElementsList={taskElementsList}
                         setTaskElementsList={setTaskElementsList}
                         doneChange={handleDone}
                     />
                     <h1>Done:</h1>
                     <DoneList
-                        currentUser={currentUser}
+                        listOwner={listOwner}
                         taskElementsList={taskElementsList}
                         doneChange={handleDone}
                     />
@@ -56,7 +56,7 @@ export default function TaskList({
                 <>
                     <h1>In progress: </h1>
                     <ToDoList
-                        currentUser={currentUser}
+                        listOwner={listOwner}
                         taskElementsList={taskElementsList}
                         setTaskElementsList={setTaskElementsList}
                         doneChange={handleDone}
@@ -69,7 +69,7 @@ export default function TaskList({
                 <>
                     <h1>Done:</h1>
                     <DoneList
-                        currentUser={currentUser}
+                        listOwner={listOwner}
                         taskElementsList={taskElementsList}
                         doneChange={handleDone}
                     />
@@ -91,7 +91,7 @@ function ToDoList({
     taskElementsList,
     setTaskElementsList,
     doneChange,
-    currentUser,
+    listOwner,
 }) {
     // console.log("taskElementsList log from toDoList" + taskElementsList);
     let toDoElementsList = taskElementsList.filter((t) => t.isDone === false);
@@ -102,7 +102,7 @@ function ToDoList({
                     <Task
                         key={t.id}
                         task={t}
-                        currentUser={currentUser}
+                        listOwner={listOwner}
                         taskElementsList={taskElementsList}
                         setTaskElementsList={setTaskElementsList}
                         doneChange={doneChange}
@@ -111,7 +111,7 @@ function ToDoList({
                     <EditableTask
                         key={t.id}
                         task={t}
-                        currentUser={currentUser}
+                        listOwner={listOwner}
                         taskElementsList={taskElementsList}
                         setTaskElementsList={setTaskElementsList}
                         doneChange={doneChange}
@@ -122,7 +122,7 @@ function ToDoList({
     );
 }
 
-function DoneList({ taskElementsList, doneChange, currentUser }) {
+function DoneList({ taskElementsList, doneChange, listOwner }) {
     let doneElementsList = taskElementsList.filter((t) => t.isDone === true);
     return (
         <ul className="doneList">
@@ -130,7 +130,7 @@ function DoneList({ taskElementsList, doneChange, currentUser }) {
                 <Task
                     key={t.id}
                     task={t}
-                    currentUser={currentUser}
+                    listOwner={listOwner}
                     taskElementsList={taskElementsList}
                     doneChange={doneChange}
                 />
@@ -144,7 +144,7 @@ function Task({
     taskElementsList,
     setTaskElementsList,
     doneChange,
-    currentUser,
+    listOwner,
 }) {
     function handleEdit(taskId) {
         setTaskElementsList((prevTaskElementsList) =>
@@ -160,14 +160,15 @@ function Task({
         fetch("http://localhost:3000/tasks", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: taskId, userId: currentUser }),
+            body: JSON.stringify({ id: taskId, owner: listOwner }),
         });
     }
+    let className = "inProgress task";
     return (
         <li
             key={task.id}
             onClick={() => doneChange(task.id)}
-            className="inProgress"
+            className={className}
         >
             <h2>{task.name}</h2>
             <p>{task.desc}</p>
@@ -250,11 +251,12 @@ function EditableTask({
             document.removeEventListener("click", handleOutsideClick);
         };
     }, [taskElementsList, setTaskElementsList]);
+    let className = "inProgress task";
     return (
         <li
             key={task.id}
             onClick={() => doneChange(task.id)}
-            className="inProgress"
+            className={className}
         >
             <div className="editing" ref={editRef}>
                 <input
