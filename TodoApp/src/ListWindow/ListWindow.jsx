@@ -2,12 +2,14 @@ import { useState, useRef, useEffect } from "react";
 import TaskList from "../TaskList/TaskList";
 import Sidebar from "../Sidebar/Sidebar";
 import "./ListWindow.css";
+import Task from "../../../Server/models/Task";
 
 export default function ListWindow({ currentUser, setIsLoggedIn }) {
     const [renderItems, setRenderItems] = useState("all");
     const [taskElementsList, setTaskElementsList] = useState([]);
     const [nextId, setNextId] = useState(0);
     const [listOwner, setListOwner] = useState(currentUser);
+    const [visible, setVisible] = useState(false);
 
     useEffect(() => {
         const getTasks = async () => {
@@ -34,9 +36,9 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
 
         getTasks();
     }, [listOwner]);
-
+    const className = visible ? "listWindow no-scroll" : "listWindow";
     return (
-        <div className="listWindow">
+        <div className={className}>
             <Sidebar
                 setIsLoggedIn={setIsLoggedIn}
                 setListOwner={setListOwner}
@@ -44,14 +46,19 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
                 currentUser={currentUser}
                 listOwner={listOwner}
             />
+            <TaskAddPopUp
+                nextId={nextId}
+                listOwner={listOwner}
+                setNextId={setNextId}
+                taskElementsList={taskElementsList}
+                setTaskElementsList={setTaskElementsList}
+                visible={visible}
+                setVisible={setVisible}
+            />
             <div className="inputs">
-                <TaskAddInputs
-                    nextId={nextId}
-                    listOwner={listOwner}
-                    setNextId={setNextId}
-                    taskElementsList={taskElementsList}
-                    setTaskElementsList={setTaskElementsList}
-                />
+                <button onClick={() => setVisible(true)} className="addTask">
+                    Add task
+                </button>
                 <Filters setRenderItems={setRenderItems} />
             </div>
             <TaskList
@@ -64,12 +71,58 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
     );
 }
 
+function TaskAddPopUp({
+    visible,
+    setVisible,
+    nextId,
+    listOwner,
+    setNextId,
+    taskElementsList,
+    setTaskElementsList,
+}) {
+    return (
+        <div className={visible === true ? "visiblePopUp" : "invisiblePopUp"}>
+            <div className="popUpContent">
+                <a
+                    href="#"
+                    className="popUpClose"
+                    onClick={() => setVisible(false)}
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M6 18 18 6M6 6l12 12"
+                        />
+                    </svg>
+                </a>
+                <TaskAddInputs
+                    nextId={nextId}
+                    listOwner={listOwner}
+                    setNextId={setNextId}
+                    taskElementsList={taskElementsList}
+                    setTaskElementsList={setTaskElementsList}
+                    setVisible={setVisible}
+                />
+            </div>
+        </div>
+    );
+}
+
 function TaskAddInputs({
     nextId,
     listOwner,
     setNextId,
     taskElementsList,
     setTaskElementsList,
+    setVisible,
 }) {
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
     const nameRef = useRef(null);
@@ -98,6 +151,7 @@ function TaskAddInputs({
         nameRef.current.value = "";
         descRef.current.value = "";
         handleInput();
+        setVisible(false);
     }
     return (
         <form method="post" onSubmit={handleAdd} className="taskAddForm">

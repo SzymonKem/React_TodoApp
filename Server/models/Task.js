@@ -7,9 +7,11 @@ const TaskSchema = new mongoose.Schema({
     owner: {
         type: {
             type: String,
+            required: true, // Optional: Ensure it's always present
         },
         id: {
-            type: mongoose.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
+            required: true, // Optional: Ensure it's always present
         },
     },
     isDone: {
@@ -24,6 +26,9 @@ const TaskSchema = new mongoose.Schema({
     editable: {
         type: Boolean,
     },
+    // tags: {
+    //     type: Array,
+    // },
 });
 
 export default mongoose.model("tasks", TaskSchema);

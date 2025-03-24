@@ -13,7 +13,7 @@
     margin: auto;
 }
 
-.taskAddForm{
+.taskAddForm {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -23,6 +23,7 @@
 }
 
 .taskAddForm > input[type="text"] {
+    width: 80%;
     padding: 10px;
     border: none;
     border-radius: 20px;
@@ -46,9 +47,9 @@
     font-size: 1.3em;
 }
 
-.taskAddFormSubmit{
-    width: 25%;
-    max-width: 25%;
+.taskAddFormSubmit,
+.addTask {
+    width: 40%;
     background-color: rgb(60, 254, 189);
     font-size: 1.5em;
     border-radius: 20px;
@@ -59,7 +60,8 @@
     transition: 0.5s;
 }
 
-.taskAddFormSubmit:hover {
+.taskAddFormSubmit:hover,
+.addTask:hover {
     background-color: rgb(63, 254, 60);
     box-shadow: 3px 3px 12px rgb(63, 254, 60);
 }
@@ -73,26 +75,26 @@
     box-shadow: none;
 }
 
-.renderControls > button{
+.renderControls > button {
     background: transparent;
     border: 3px solid rgb(60, 180, 254);
     color: rgb(60, 180, 254);
     transition: 0.5s;
 }
 
-.renderControls > button:hover{
+.renderControls > button:hover {
     background-color: rgb(255, 255, 255);
 }
 
-.renderControls > :first-child{
+.renderControls > :first-child {
     border-radius: 20px 0 0 20px;
 }
 
-.renderControls > :last-child{
+.renderControls > :last-child {
     border-radius: 0 20px 20px 0;
 }
 
-.logout{
+.logout {
     position: relative;
     left: 0;
     top: 0;
@@ -103,7 +105,59 @@
     transition: 0.5s;
 }
 
-.logout:hover{
-    box-shadow:  3px 3px 12px rgb(60, 180, 254);
-    cursor:pointer;
+.logout:hover {
+    box-shadow: 3px 3px 12px rgb(60, 180, 254);
+    cursor: pointer;
+}
+
+.invisiblePopUp {
+    display: none;
+}
+
+.visiblePopUp {
+    position: absolute;
+    display: block;
+    z-index: 5;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.popUpContent {
+    position: relative;
+    width: 50%;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #353637;
+    border-radius: 20px;
+}
+
+.popUpClose {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+}
+
+.popUpClose:hover {
+    color: red;
+}
+
+.popUpClose > svg {
+    width: 30px;
+    height: 30px;
+}
+
+.no-scroll {
+    height: 100vh;
+    overflow: hidden;
+}
+
+body {
+    margin: 0;
 }
