@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import TaskList from "../TaskList/TaskList";
 import Sidebar from "../Sidebar/Sidebar";
 import "./ListWindow.css";
-import Task from "../../../Server/models/Task";
 
 export default function ListWindow({ currentUser, setIsLoggedIn }) {
     const [renderItems, setRenderItems] = useState("all");
@@ -10,10 +9,10 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
     const [nextId, setNextId] = useState(0);
     const [listOwner, setListOwner] = useState(currentUser);
     const [visible, setVisible] = useState(false);
+    const [tags, setTags] = useState(["in progress", "done"]);
 
     useEffect(() => {
         const getTasks = async () => {
-            // if (taskElementsList.length === 0) {
             try {
                 const response = await fetch(
                     "http://localhost:3000/tasks/?owner=" +
@@ -59,7 +58,11 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
                 <button onClick={() => setVisible(true)} className="addTask">
                     Add task
                 </button>
-                <Filters setRenderItems={setRenderItems} />
+                <Filters
+                    setRenderItems={setRenderItems}
+                    tags={tags}
+                    setTags={setTags}
+                />
             </div>
             <TaskList
                 taskElementsList={taskElementsList}
@@ -182,30 +185,62 @@ function TaskAddInputs({
     );
 }
 
-function Filters({ setRenderItems }) {
+function Filters({ setRenderItems, tags, setTags }) {
+    console.log("tags");
+    console.log(tags);
+
     return (
-        <div className="renderControls">
-            <button
-                onClick={() => {
-                    setRenderItems("all");
-                }}
-            >
-                Show all tasks
-            </button>
-            <button
-                onClick={() => {
-                    setRenderItems("inProgress");
-                }}
-            >
-                Show tasks in progress
-            </button>
-            <button
-                onClick={() => {
-                    setRenderItems("done");
-                }}
-            >
-                Show done tasks
-            </button>
-        </div>
+        <>
+            <div className="tagList">
+                <ul className="tagListUl">
+                    {tags.map((tag) => (
+                        <li>
+                            <a href="#">{tag}</a>
+                        </li>
+                    ))}
+                    <li className="createTag">
+                        <a href="#">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M12 4.5v15m7.5-7.5h-15"
+                                />
+                            </svg>
+                            <span>Create tag</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div className="renderControls">
+                <button
+                    onClick={() => {
+                        setRenderItems("all");
+                    }}
+                >
+                    Show all tasks
+                </button>
+                <button
+                    onClick={() => {
+                        setRenderItems("inProgress");
+                    }}
+                >
+                    Show tasks in progress
+                </button>
+                <button
+                    onClick={() => {
+                        setRenderItems("done");
+                    }}
+                >
+                    Show done tasks
+                </button>
+            </div>
+        </>
     );
 }

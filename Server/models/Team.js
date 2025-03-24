@@ -13,6 +13,9 @@ const TeamSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         require: true,
     },
+    tags: {
+        type: Array,
+    },
 });
 
 export default mongoose.model("teams", TeamSchema);

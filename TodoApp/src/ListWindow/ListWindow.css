@@ -161,3 +161,51 @@
 body {
     margin: 0;
 }
+
+.tagList {
+    width: 60%;
+}
+
+.tagListUl {
+    padding: 0;
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1%;
+    width: 100%;
+    margin: 0;
+}
+
+.tagListUl > li {
+    padding: 10px;
+    background-color: var(--light-blue);
+    border-radius: 20px;
+    transition: 0.5s;
+}
+
+.tagListUl > li:hover {
+    background-color: #0281ff;
+}
+
+.tagListUl > li > a {
+    width: 100%;
+    height: 100%;
+}
+
+.tagListUl > .createTag {
+    background: none;
+    padding: 0;
+}
+
+.tagListUl > .createTag:hover {
+    background-color: initial;
+}
+
+.tagListUl > .createTag > a > svg {
+    transition: 0.5s;
+}
+
+.tagListUl > .createTag:hover > a > svg {
+    transform: rotate(180deg);
+}
