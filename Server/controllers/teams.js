@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Team from "../models/Team.js";
 import User from "../models/User.js";
+import Task from "../models/Task.js";
 
 export async function CreateTeam(req, res) {
     const team = req.body;
@@ -18,6 +19,25 @@ export async function CreateTeam(req, res) {
         res.status(500).json({
             status: "error",
             message: "Unexpected error happened " + err.message,
+        });
+    }
+}
+
+export async function DeleteTeam(req, res) {
+    console.log(req.body.teamId);
+    const teamId = new mongoose.Types.ObjectId(req.body.teamId);
+    console.log(teamId);
+    try {
+        await Team.deleteOne({ _id: teamId });
+        await Task.deleteMany({ owner: { type: "team", id: req.body.teamId } });
+        res.status(200).json({
+            status: "successs",
+            message: "successfully deleted team",
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: "error",
+            message: "Unexpected error happened: " + err.message,
         });
     }
 }

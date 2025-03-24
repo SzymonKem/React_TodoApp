@@ -84,6 +84,72 @@ nav > ul > li{
     padding: 0;
 }
 
-.userList svg:hover{
+ul svg:hover{
     stroke: red;
+}
+
+.activeTeam{
+    color: var(--light-blue);
+    font-weight: bold;
+}
+
+svg{
+    vertical-align: middle;
+}
+
+ul > form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    
+}
+
+ul > form > input[type="text"]{
+    width: 80%;
+    background: var(--black);
+    box-shadow: none;
+    color: white;
+}
+
+.addButtons{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 5px;
+}
+
+.addButtons > input{
+    width: 50%;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    transition: 0.5s;
+}
+
+.addCancel{
+    background-color: rgb(254, 60, 60);
+    color: rgb(83, 23, 23);
+    box-shadow: 3px 3px 12px rgb(254, 60, 60);
+    margin: 0 10px 10px 0;
+    border-radius: 0 20px 20px 0;
+}
+
+.addConfirm{
+    background-color: rgb(60, 180, 254);
+    color: rgb(23, 44, 83);
+    box-shadow: -3px 3px 12px rgb(60, 180, 254);
+    margin: 0 0 10px 10px;
+    border-radius: 20px 0 0 20px;
+}
+
+.addConfirm:hover {
+    background-color: rgb(60, 121, 254);
+    box-shadow: -3px 3px 12px rgb(60, 121, 254);
+}
+
+.addCancel:hover {
+    background-color: rgb(161, 0, 0);
+    box-shadow: 3px 3px 12px rgb(161, 0, 0);
 }
