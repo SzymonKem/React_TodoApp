@@ -1,4 +1,4 @@
-.loginForm{
+.loginForm {
     width: 50%;
     height: 100vh;
     display: flex;
@@ -7,7 +7,8 @@
     justify-content: center;
 }
 
-input[type="text"], input[type="password"]{
+.loginFrom > input[type="text"],
+.loginForm > input[type="password"] {
     width: 40%;
     padding: 10px;
     border: none;
@@ -18,7 +19,8 @@ input[type="text"], input[type="password"]{
     transition: 0.5s;
 }
 
-input[name="register"],input[name="login"]{
+input[name="register"],
+input[name="login"] {
     width: 20%;
     font-size: 1.5em;
     font-weight: bold;
@@ -27,7 +29,7 @@ input[name="register"],input[name="login"]{
     border-radius: 20px;
 }
 
-input[name="login"]{
+input[name="login"] {
     border: none;
     background-color: rgb(60, 180, 254);
     color: rgb(23, 44, 83);
@@ -35,7 +37,7 @@ input[name="login"]{
     margin: 10px;
 }
 
-input[name="register"]{
+input[name="register"] {
     background: transparent;
     border: 3px solid rgb(60, 180, 254);
     color: rgb(60, 180, 254);
@@ -46,19 +48,19 @@ input[name="login"]:hover {
     box-shadow: -3px 3px 12px rgb(60, 121, 254);
 }
 
-input[name="register"]:hover{
-    box-shadow:  0px 3px 12px rgb(60, 180, 254);
+input[name="register"]:hover {
+    box-shadow: 0px 3px 12px rgb(60, 180, 254);
 }
 
-.rememberMe{
+.rememberMe {
     text-align: left;
-    color:rgb(60, 180, 254);
+    color: rgb(60, 180, 254);
     margin-bottom: 30px;
     display: flex;
     gap: 10px;
 }
 
-.rememberMe > input{
+.rememberMe > input {
     accent-color: rgb(60, 180, 254);
     background-color: var(--black);
 }
