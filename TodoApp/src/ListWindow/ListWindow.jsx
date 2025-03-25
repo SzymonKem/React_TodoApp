@@ -10,8 +10,19 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
     const [listOwner, setListOwner] = useState(currentUser);
 
     useEffect(() => {
+        const socket = new WebSocket(
+            "ws://localhost:3000/tasks?listOwner=" + JSON.stringify(listOwner)
+        );
+
+        socket.addEventListener("open", () => {
+            console.log("opened socket connection");
+        });
+        socket.addEventListener("message", () => {
+            console.log("got message");
+            getTasks();
+        });
+
         const getTasks = async () => {
-            // if (taskElementsList.length === 0) {
             try {
                 const response = await fetch(
                     "http://localhost:3000/tasks/?owner=" +
@@ -21,7 +32,6 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
                 console.log(data);
                 const receivedTaskList = data.data;
                 setTaskElementsList(receivedTaskList);
-
                 setNextId(
                     receivedTaskList.length > 0
                         ? receivedTaskList[receivedTaskList.length - 1].id + 1
@@ -31,7 +41,6 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
                 console.error("Error fetching tasks:", error);
             }
         };
-
         getTasks();
     }, [listOwner]);
 

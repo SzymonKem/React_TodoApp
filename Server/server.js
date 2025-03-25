@@ -2,12 +2,13 @@ import express from "express";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import expressWs from "express-ws";
 import { mongoose } from "mongoose";
 import Router from "./routes/index.js";
 import Auth from "./routes/auth.js";
 import Tasks from "./routes/tasks.js";
 import Teams from "./routes/teams.js";
-const server = express();
+const server = expressWs(express()).app;
 const port = 3000;
 
 server.use(
@@ -33,6 +34,12 @@ mongoose
     .catch((err) => console.log(err));
 
 Router(server);
+server.ws("/ws", (ws, req) => {
+    ws.on("message", (msg) => {
+        console.log(msg);
+        ws.send(msg);
+    });
+});
 server.use("/auth", Auth);
 server.use("/tasks", Tasks);
 server.use("/teams", Teams);
