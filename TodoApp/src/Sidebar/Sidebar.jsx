@@ -6,6 +6,8 @@ export default function Sidebar({
     setListOwner,
     currentUser,
     listOwner,
+    teamUpdateHandler,
+    userUpdateHandler,
 }) {
     return (
         <div className="sidebar">
@@ -21,10 +23,15 @@ export default function Sidebar({
                     currentUser={currentUser}
                     listOwner={listOwner}
                     setListOwner={setListOwner}
+                    teamUpdateHandler={teamUpdateHandler}
                 />
             </nav>
             {listOwner.type === "team" && (
-                <UserList listOwner={listOwner} currentUser={currentUser} />
+                <UserList
+                    listOwner={listOwner}
+                    currentUser={currentUser}
+                    userUpdateHandler={userUpdateHandler}
+                />
             )}
         </div>
     );
@@ -61,32 +68,43 @@ function MyTasks({ currentUser, listOwner, setListOwner }) {
     );
 }
 
-function Teams({ currentUser, listOwner, setListOwner }) {
+function Teams({ currentUser, listOwner, setListOwner, teamUpdateHandler }) {
     const [addingTeam, setAddingTeam] = useState(false);
     const [creationInputValue, setcreationInputValue] = useState("");
     const [teamsList, setTeamsList] = useState([]);
     useEffect(() => {
         const getTeams = async () => {
             try {
-                console.log(currentUser.id);
+                // console.log(currentUser.id);
                 const response = await fetch(
                     "http://localhost:3000/teams/get?userId=" + currentUser.id
                 );
                 const data = await response.json();
                 const receivedTeamsList = data.data;
                 console.log(receivedTeamsList);
+                console.log(listOwner);
+                const removed =
+                    listOwner.type === "team" &&
+                    !receivedTeamsList.some(
+                        (team) => team._id === listOwner.id
+                    );
+                console.log("removed: " + removed);
                 setTeamsList(receivedTeamsList);
+                if (removed) {
+                    setListOwner(currentUser);
+                }
             } catch (err) {
                 console.log(err.message);
             }
         };
 
+        teamUpdateHandler(getTeams);
         getTeams();
     }, [listOwner]);
     async function handleTeamAdd(currentUser, e) {
         e.preventDefault();
-        console.log("current user: " + currentUser);
-        console.log("creationInputValue: " + creationInputValue);
+        // console.log("current user: " + currentUser);
+        // console.log("creationInputValue: " + creationInputValue);
         const newTeam = {
             teamName: creationInputValue,
             owner: currentUser.id,
@@ -155,8 +173,8 @@ function Teams({ currentUser, listOwner, setListOwner }) {
                         >
                             {team.teamName}
                         </a>
-                        {console.log(currentUser.id)}
-                        {console.log(team.ownerId)}
+                        {/* {console.log(currentUser.id)}
+                        {console.log(team.ownerId)} */}
                         {currentUser.id == team.owner && (
                             <a
                                 href="#"
@@ -192,6 +210,7 @@ function Teams({ currentUser, listOwner, setListOwner }) {
                             required
                             type="text"
                             placeholder="Team name"
+                            className="teamAddInput"
                             onChange={(e) =>
                                 setcreationInputValue(e.target.value)
                             }
@@ -216,7 +235,7 @@ function Teams({ currentUser, listOwner, setListOwner }) {
     );
 }
 
-function UserList({ listOwner, currentUser }) {
+function UserList({ listOwner, currentUser, userUpdateHandler }) {
     const [currentTeam, setCurrentTeam] = useState({
         list: [],
         owner: "",
@@ -240,6 +259,7 @@ function UserList({ listOwner, currentUser }) {
                 console.log(err.message);
             }
         };
+        userUpdateHandler(getUserList);
         getUserList();
     }, [addingUser, listOwner]);
 
@@ -276,12 +296,12 @@ function UserList({ listOwner, currentUser }) {
     }
     return (
         <div className="userListContainer">
-            {console.log(currentTeam)}
+            {/* {console.log(currentTeam)} */}
             <h2>Owner:</h2>
             <span>{currentTeam.owner}</span>
             <h3>Users: </h3>
-            {console.log(currentUser.id)}
-            {console.log(currentTeam.ownerId)}
+            {/* {console.log(currentUser.id)}
+            {console.log(currentTeam.ownerId)} */}
             {currentUser.id == currentTeam.ownerId && (
                 <a href="#" onClick={() => setAddingUser(true)}>
                     <svg

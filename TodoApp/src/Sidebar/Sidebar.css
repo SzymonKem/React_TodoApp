@@ -1,4 +1,4 @@
-.sidebar{
+.sidebar {
     position: fixed;
     width: 15%;
     height: 90vh;
@@ -14,49 +14,49 @@
     overflow-y: auto;
 }
 
-.sidebar > h2{
+.sidebar > h2 {
     text-align: center;
 }
 
-nav{
+nav {
     display: flex;
     flex-direction: column;
 }
 
-hr{
+hr {
     border-color: var(--light-blue);
     width: 80%;
     margin-left: 0;
 }
 
-nav > h2{
+nav > h2 {
     margin-bottom: 0;
 }
 
-a > svg{
+a > svg {
     width: 20px;
     height: 20px;
     vertical-align: middle;
 }
 
-a{
+a {
     color: white;
     text-decoration: none;
     word-break: break-all;
     text-wrap: wrap;
 }
 
-nav > ul{
+nav > ul {
     margin-top: 0;
     padding: 0;
     list-style-type: none;
 }
 
-nav > ul > li{
+nav > ul > li {
     margin-top: 10px;
 }
 
-.userListContainer{
+.userListContainer {
     position: fixed;
     right: 0;
     top: 0;
@@ -67,60 +67,64 @@ nav > ul > li{
     background-color: inherit;
 }
 
-.userListContainer > h3, h2{
+.userListContainer > h3,
+h2 {
     margin-bottom: 0;
 }
 
-.userListContainer > span{
-    color:white;
+.userListContainer > span {
+    color: white;
     font-size: 1.2em;
     font-weight: bold;
 }
 
-.userList{
+.userList {
     color: white;
     margin-top: 0;
     list-style-type: none;
     padding: 0;
 }
 
-ul svg:hover{
+ul svg:hover {
     stroke: red;
 }
 
-.activeTeam{
+.activeTeam {
     color: var(--light-blue);
     font-weight: bold;
 }
 
-svg{
+svg {
     vertical-align: middle;
 }
 
-ul > form{
+ul > form {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     margin-top: 10px;
-    
 }
 
-ul > form > input[type="text"]{
+ul > form > input[type="text"] {
     width: 80%;
     background: var(--black);
     box-shadow: none;
     color: white;
+    padding: 10px;
+    border: none;
+    outline: none;
+    border-radius: 20px;
 }
 
-.addButtons{
+.addButtons {
     display: flex;
     justify-content: center;
     width: 100%;
     margin-top: 5px;
 }
 
-.addButtons > input{
+.addButtons > input {
     width: 50%;
     font-weight: bold;
     border: none;
@@ -128,7 +132,7 @@ ul > form > input[type="text"]{
     transition: 0.5s;
 }
 
-.addCancel{
+.addCancel {
     background-color: rgb(254, 60, 60);
     color: rgb(83, 23, 23);
     box-shadow: 3px 3px 12px rgb(254, 60, 60);
@@ -136,7 +140,7 @@ ul > form > input[type="text"]{
     border-radius: 0 20px 20px 0;
 }
 
-.addConfirm{
+.addConfirm {
     background-color: rgb(60, 180, 254);
     color: rgb(23, 44, 83);
     box-shadow: -3px 3px 12px rgb(60, 180, 254);

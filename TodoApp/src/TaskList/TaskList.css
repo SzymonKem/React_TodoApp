@@ -147,7 +147,7 @@ p {
 
 .editableTaskInput {
     width: 80%;
-    background: var(--black);
+    background-color: var(--black);
     box-shadow: none;
     color: white;
 }

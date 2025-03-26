@@ -8,7 +8,9 @@ import Router from "./routes/index.js";
 import Auth from "./routes/auth.js";
 import Tasks from "./routes/tasks.js";
 import Teams from "./routes/teams.js";
-const server = expressWs(express()).app;
+import { Socket } from "./controllers/socket.js";
+const server = express();
+expressWs(server);
 const port = 3000;
 
 server.use(
@@ -34,12 +36,7 @@ mongoose
     .catch((err) => console.log(err));
 
 Router(server);
-server.ws("/ws", (ws, req) => {
-    ws.on("message", (msg) => {
-        console.log(msg);
-        ws.send(msg);
-    });
-});
+server.ws("/", Socket);
 server.use("/auth", Auth);
 server.use("/tasks", Tasks);
 server.use("/teams", Teams);
