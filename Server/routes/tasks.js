@@ -1,10 +1,7 @@
 import express from "express";
-import expressWs from "express-ws";
-import { GetTasks, Add, Edit, Delete, Socket } from "../controllers/tasks.js";
+import { GetTasks, Add, Edit, Delete } from "../controllers/tasks.js";
 
 const router = express.Router();
-expressWs(router);
-router.ws("/", Socket);
 
 router.get("/", GetTasks);
 router.post("/", Add);

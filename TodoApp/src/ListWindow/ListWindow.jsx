@@ -8,18 +8,32 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
     const [taskElementsList, setTaskElementsList] = useState([]);
     const [nextId, setNextId] = useState(0);
     const [listOwner, setListOwner] = useState(currentUser);
+    const socket = useRef(null);
+    const teamUpdateHandlerRef = useRef(null);
+    const userUpdateHandlerRef = useRef(null);
 
     useEffect(() => {
-        const socket = new WebSocket(
-            "ws://localhost:3000/tasks?listOwner=" + JSON.stringify(listOwner)
+        socket.current = new WebSocket(
+            "ws://localhost:3000?listOwner=" +
+                JSON.stringify(listOwner) +
+                "&currentUser=" +
+                JSON.stringify(currentUser)
         );
-
-        socket.addEventListener("open", () => {
+        socket.current.addEventListener("open", () => {
             console.log("opened socket connection");
         });
-        socket.addEventListener("message", () => {
-            console.log("got message");
-            getTasks();
+        socket.current.addEventListener("message", (event) => {
+            console.log("Event: ", event);
+            console.log("Event data: ", event.data);
+            if (event.data == "tasksUpdated") {
+                getTasks();
+            } else if (event.data == "teamsUpdated") {
+                console.log("TeamsUpdated");
+                teamUpdateHandlerRef.current();
+                if (listOwner.type == "team") {
+                    userUpdateHandlerRef.current();
+                }
+            }
         });
 
         const getTasks = async () => {
@@ -42,6 +56,7 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
             }
         };
         getTasks();
+        return () => socket.current.close();
     }, [listOwner]);
 
     return (
@@ -52,6 +67,12 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
                 setTaskElementsList={setTaskElementsList}
                 currentUser={currentUser}
                 listOwner={listOwner}
+                teamUpdateHandler={(fun) =>
+                    (teamUpdateHandlerRef.current = fun)
+                }
+                userUpdateHandler={(fun) =>
+                    (userUpdateHandlerRef.current = fun)
+                }
             />
             <div className="inputs">
                 <TaskAddInputs
