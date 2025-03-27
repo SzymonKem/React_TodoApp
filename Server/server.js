@@ -10,7 +10,7 @@ import Tasks from "./routes/tasks.js";
 import Teams from "./routes/teams.js";
 import { Socket } from "./controllers/socket.js";
 const server = express();
-expressWs(server);
+const webSocket = expressWs(server);
 const port = 3000;
 
 server.use(
@@ -37,6 +37,17 @@ mongoose
 
 Router(server);
 server.ws("/", Socket);
+const pingInterval = setInterval(() => {
+    // console.log(webSocket.getWss("/").clients);
+    webSocket.getWss("/").clients.forEach((ws) => {
+        if (!ws.isAlive) {
+            console.log("inactive connection");
+            ws.terminate();
+        }
+        ws.isAlive = false;
+        ws.ping();
+    });
+}, 5000);
 server.use("/auth", Auth);
 server.use("/tasks", Tasks);
 server.use("/teams", Teams);

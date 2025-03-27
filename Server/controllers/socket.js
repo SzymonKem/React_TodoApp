@@ -5,6 +5,10 @@ export let users = new Map();
 
 export function Socket(ws, req) {
     console.log("connected");
+    ws.isAlive = true;
+    ws.on("pong", () => {
+        ws.isAlive = true;
+    });
     console.log(req.query.listOwner);
     const user = JSON.parse(req.query.currentUser);
     const owner = JSON.parse(req.query.listOwner);
