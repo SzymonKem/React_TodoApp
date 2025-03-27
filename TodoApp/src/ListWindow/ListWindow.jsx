@@ -8,10 +8,36 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
     const [taskElementsList, setTaskElementsList] = useState([]);
     const [nextId, setNextId] = useState(0);
     const [listOwner, setListOwner] = useState(currentUser);
+    const socket = useRef(null);
+    const teamUpdateHandlerRef = useRef(null);
+    const userUpdateHandlerRef = useRef(null);
     const [visible, setVisible] = useState(false);
     const [tags, setTags] = useState(["in progress", "done"]);
 
     useEffect(() => {
+        socket.current = new WebSocket(
+            "ws://localhost:3000?listOwner=" +
+                JSON.stringify(listOwner) +
+                "&currentUser=" +
+                JSON.stringify(currentUser)
+        );
+        socket.current.addEventListener("open", () => {
+            console.log("opened socket connection");
+        });
+        socket.current.addEventListener("message", (event) => {
+            console.log("Event: ", event);
+            console.log("Event data: ", event.data);
+            if (event.data == "tasksUpdated") {
+                getTasks();
+            } else if (event.data == "teamsUpdated") {
+                console.log("TeamsUpdated");
+                teamUpdateHandlerRef.current();
+                if (listOwner.type == "team") {
+                    userUpdateHandlerRef.current();
+                }
+            }
+        });
+
         const getTasks = async () => {
             try {
                 const response = await fetch(
@@ -22,7 +48,6 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
                 console.log(data);
                 const receivedTaskList = data.data;
                 setTaskElementsList(receivedTaskList);
-
                 setNextId(
                     receivedTaskList.length > 0
                         ? receivedTaskList[receivedTaskList.length - 1].id + 1
@@ -32,8 +57,8 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
                 console.error("Error fetching tasks:", error);
             }
         };
-
         getTasks();
+        return () => socket.current.close();
     }, [listOwner]);
     const className = visible ? "listWindow no-scroll" : "listWindow";
     return (
@@ -44,6 +69,12 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
                 setTaskElementsList={setTaskElementsList}
                 currentUser={currentUser}
                 listOwner={listOwner}
+                teamUpdateHandler={(fun) =>
+                    (teamUpdateHandlerRef.current = fun)
+                }
+                userUpdateHandler={(fun) =>
+                    (userUpdateHandlerRef.current = fun)
+                }
             />
             <TaskAddPopUp
                 nextId={nextId}

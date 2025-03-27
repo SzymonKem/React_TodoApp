@@ -260,6 +260,7 @@ function EditableTask({
         >
             <div className="editing" ref={editRef}>
                 <input
+                    className="editableTaskInput"
                     type="text"
                     placeholder={task.name}
                     ref={editNameRef}
@@ -271,6 +272,7 @@ function EditableTask({
                     }}
                 />
                 <input
+                    className="editableTaskInput"
                     type="text"
                     placeholder={task.desc}
                     ref={editDescRef}

@@ -120,6 +120,10 @@ ul > form > input[type="text"] {
     background: var(--black);
     box-shadow: none;
     color: white;
+    padding: 10px;
+    border: none;
+    outline: none;
+    border-radius: 20px;
 }
 
 .addButtons {
