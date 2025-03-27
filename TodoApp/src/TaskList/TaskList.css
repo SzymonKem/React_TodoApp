@@ -151,3 +151,10 @@ p {
     box-shadow: none;
     color: white;
 }
+
+.tag {
+    background-color: var(--black);
+    color: white;
+    padding: 5px;
+    border-radius: 20px;
+}

@@ -16,8 +16,12 @@ export default function LoginPage({ setIsLoggedIn, setCurrentUser }) {
                     }
                 );
                 const data = await response.json();
-                setIsLoggedIn(data.data[0]);
-                setCurrentUser({ type: "user", id: data.data[1] });
+                setIsLoggedIn(data.data.logIn);
+                setCurrentUser({
+                    type: "user",
+                    id: data.data.user,
+                    list: data.data.list,
+                });
             } catch (err) {
                 console.log(err.message);
             }
@@ -47,7 +51,12 @@ export default function LoginPage({ setIsLoggedIn, setCurrentUser }) {
             );
 
             const data = await response.json();
-            setCurrentUser({ type: "user", id: data.data[0].foundUserId });
+            console.log(data.data);
+            setCurrentUser({
+                type: "user",
+                id: data.data.foundUserId,
+                list: data.data.usersList,
+            });
             setIsLoggedIn(true);
         } catch (err) {
             console.log(err.message);

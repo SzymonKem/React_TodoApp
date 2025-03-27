@@ -8,11 +8,11 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
     const [taskElementsList, setTaskElementsList] = useState([]);
     const [nextId, setNextId] = useState(0);
     const [listOwner, setListOwner] = useState(currentUser);
+    const [visible, setVisible] = useState(false);
+    const [tags, setTags] = useState(["in progress", "done"]);
     const socket = useRef(null);
     const teamUpdateHandlerRef = useRef(null);
     const userUpdateHandlerRef = useRef(null);
-    const [visible, setVisible] = useState(false);
-    const [tags, setTags] = useState(["in progress", "done"]);
 
     useEffect(() => {
         socket.current = new WebSocket(
@@ -47,6 +47,8 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
 
         const getTasks = async () => {
             try {
+                console.log("Logging listOwner from getTasks:");
+                console.log(listOwner);
                 const response = await fetch(
                     "http://localhost:3000/tasks/?owner=" +
                         JSON.stringify(listOwner)
@@ -176,11 +178,12 @@ function TaskAddInputs({
         e.preventDefault();
         const newTask = {
             id: nextId,
-            owner: listOwner,
+            list: listOwner.list,
             isDone: false,
             name: nameRef.current.value.trim(),
             desc: descRef.current.value.trim(),
             editable: false,
+            tags: ["in progress"],
         };
         setNextId(nextId + 1);
         setTaskElementsList([...taskElementsList, newTask]);
@@ -232,7 +235,7 @@ function Filters({ setRenderItems, tags, setTags }) {
             <div className="tagList">
                 <ul className="tagListUl">
                     {tags.map((tag) => (
-                        <li>
+                        <li key={tag}>
                             <a href="#">{tag}</a>
                         </li>
                     ))}

@@ -11,9 +11,19 @@ export default function TaskList({
         const currentTask = taskElementsList.find(
             (element) => element.id == taskId
         );
+        const isInProgress = currentTask.tags.includes("in progress");
         const newTask = {
             ...currentTask,
             isDone: !currentTask.isDone,
+            tags: isInProgress
+                ? [
+                      ...currentTask.tags.filter((tag) => tag != "in progress"),
+                      "done",
+                  ]
+                : [
+                      ...currentTask.tags.filter((tag) => tag != "done"),
+                      "in progress",
+                  ],
         };
         setTaskElementsList((prevTaskElementsList) =>
             prevTaskElementsList.map((task) =>
@@ -156,11 +166,12 @@ function Task({
         );
     }
     function handleDelete(taskId) {
+        console.log(taskElementsList);
         setTaskElementsList(taskElementsList.filter((t) => t.id !== taskId));
         fetch("http://localhost:3000/tasks", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: taskId, owner: listOwner }),
+            body: JSON.stringify({ id: taskId, list: listOwner.list }),
         });
     }
     let className = "inProgress task";
@@ -171,6 +182,11 @@ function Task({
             className={className}
         >
             <h2>{task.name}</h2>
+            {task.tags.map((tag) => (
+                <span className="tag" key={tag}>
+                    {tag}
+                </span>
+            ))}
             <p>{task.desc}</p>
             {!task.isDone ? (
                 <div className="taskELementButtons">

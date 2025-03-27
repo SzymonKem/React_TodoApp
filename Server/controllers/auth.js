@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import List from "../models/List.js";
 // import session, { Cookie } from "express-session";
 import bcrypt from "bcrypt";
 
@@ -20,12 +21,18 @@ export async function Register(req, res) {
         });
         const sessionId = req.session.id;
         const foundUserId = foundUser.toObject()._id;
+        const newList = new List({
+            owner: { type: "user", id: foundUserId },
+            tags: ["in progress", "done"],
+            tasks: [],
+        });
+        const savedList = await newList.save();
         if (req.body.isChecked) {
             setCookies(sessionId, foundUserId, res);
         }
         res.status(200).json({
             status: "success",
-            data: [{ username, foundUserId }],
+            data: { username, foundUserId, usersList: savedList._id },
             message: "Your account has been successfully created",
         });
     } catch (err) {
@@ -59,6 +66,9 @@ export async function Login(req, res) {
             });
         }
         const foundUserId = existingUser.toObject()._id;
+        const usersList = await List.findOne({
+            owner: { type: "user", id: foundUserId },
+        });
         const sessionId = req.session.id;
         console.log(sessionId);
         if (req.body.isChecked) {
@@ -66,7 +76,12 @@ export async function Login(req, res) {
         }
         res.status(200).json({
             status: "success",
-            data: [{ username, foundUserId, sessionId }],
+            data: {
+                username,
+                foundUserId,
+                sessionId,
+                usersList: usersList._id,
+            },
             message: "Logged in",
         });
     } catch (err) {
@@ -104,9 +119,10 @@ export async function CheckRemembered(req, res) {
             message: "user not remembered. please log in",
         });
     } else {
+        const list = await List.findOne({ "owner.id": req.cookies.user });
         res.status(200).json({
             status: "success",
-            data: [true, req.cookies.user],
+            data: { logIn: true, user: req.cookies.user, list: list._id },
             message: "User remembered",
         });
     }

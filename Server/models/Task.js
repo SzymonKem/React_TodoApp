@@ -4,15 +4,8 @@ const TaskSchema = new mongoose.Schema({
     id: {
         type: Number,
     },
-    owner: {
-        type: {
-            type: String,
-            required: true,
-        },
-        id: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-        },
+    list: {
+        type: mongoose.Types.ObjectId,
     },
     isDone: {
         type: Boolean,

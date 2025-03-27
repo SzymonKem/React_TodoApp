@@ -1,16 +1,27 @@
 import mongoose from "mongoose";
 import Task from "../models/Task.js";
 import { broadcastToClients, teams } from "./socket.js";
+import List from "../models/List.js";
 
 let msg = "tasksUpdated";
 
 export async function GetTasks(req, res) {
     const owner = JSON.parse(req.query.owner);
+    console.log("Logging owner from gettasks");
+    console.log(owner);
     owner.id = new mongoose.Types.ObjectId(owner.id);
     try {
-        const gotTasks = await Task.find({
-            owner: owner,
-        });
+        // console.log("logging owner");
+        // console.log(owner);
+        let currentList = await List.findOne({ "owner.id": owner.id });
+        // console.log("current list");
+        // console.log(currentList);
+        const gotTasks = await Promise.all(
+            currentList.tasks.map(async (task) => {
+                const foundTask = await Task.findOne({ _id: task });
+                return foundTask;
+            })
+        );
         res.status(200).json({
             status: "success",
             data: gotTasks,
@@ -28,11 +39,19 @@ export async function Add(req, res) {
     const task = req.body;
     try {
         const newTask = new Task(task);
-        await newTask.save();
+        const savedTask = await newTask.save();
         console.log(task.owner);
         console.log(teams);
-        if (task.owner.type === "team") {
-            broadcastToClients(task.owner.id, msg);
+        console.log("logging task");
+        console.log(task);
+        const list = await List.findOneAndUpdate(
+            { _id: task.list },
+            { $push: { tasks: savedTask._id } }
+        );
+        console.log("logging list: ");
+        console.log(list);
+        if (list.owner.type === "team") {
+            broadcastToClients(list.owner.id, msg);
         }
         res.status(200).json({
             status: "success",
@@ -48,11 +67,12 @@ export async function Add(req, res) {
 
 export async function Edit(req, res) {
     const task = req.body;
-    task.owner.id = new mongoose.Types.ObjectId(task.owner.id);
+    task.list = new mongoose.Types.ObjectId(task.list);
     try {
-        await Task.replaceOne({ id: task.id, owner: task.owner }, task);
-        if (task.owner.type === "team") {
-            broadcastToClients(task.owner.id, msg);
+        await Task.replaceOne({ id: task.id, list: task.list }, task);
+        const list = await List.findOne({ _id: task.list });
+        if (list.owner.type === "team") {
+            broadcastToClients(list.owner.id, msg);
         }
         res.status(200).json({
             status: "success",
@@ -68,15 +88,23 @@ export async function Edit(req, res) {
 
 export async function Delete(req, res) {
     const task = req.body;
-    task.owner.id = new mongoose.Types.ObjectId(task.owner.id);
+    task.list = new mongoose.Types.ObjectId(task.list);
     console.log(task);
     try {
-        await Task.deleteOne({
+        const deletedTask = await Task.findOneAndDelete({
             id: task.id,
-            owner: task.owner,
+            list: task.list,
         });
-        if (task.owner.type === "team") {
-            broadcastToClients(task.owner.id, msg);
+        console.log("logging task");
+        console.log(task);
+        const list = await List.findOneAndUpdate(
+            { _id: task.list },
+            { $pull: { tasks: deletedTask._id } }
+        );
+        console.log("logging list");
+        console.log(list);
+        if (list.owner.type === "team") {
+            broadcastToClients(list.owner.id, msg);
         }
         res.status(200).json({
             status: "success",

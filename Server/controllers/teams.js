@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Team from "../models/Team.js";
 import User from "../models/User.js";
 import Task from "../models/Task.js";
+import List from "../models/List.js";
 import { broadcastToClients, teams, users } from "./socket.js";
 
 let msg = "teamsUpdated";
@@ -12,10 +13,25 @@ export async function CreateTeam(req, res) {
     try {
         const newTeam = new Team(team);
         console.log(newTeam);
-        const savedTask = await newTeam.save();
+        const savedTeam = await newTeam.save();
+        const newList = new List({
+            owner: { type: "team", id: savedTeam._id },
+            tags: ["in progress", "done"],
+            tasks: [],
+        });
+        const savedList = await newList.save();
+        console.log("saved list");
+        console.log(savedList);
+        const updatedTeam = await Team.findOneAndUpdate(
+            { _id: savedTeam._id },
+            { $set: { list: savedList._id } },
+            { new: true }
+        );
+        console.log("Updated team");
+        console.log(updatedTeam);
         res.status(200).json({
             status: "success",
-            data: savedTask._id,
+            data: updatedTeam,
             message: "successfully created team",
         });
     } catch (err) {
@@ -34,7 +50,10 @@ export async function DeleteTeam(req, res) {
         const teamsUsers = await Team.findOne({ _id: teamId });
         const userList = teamsUsers.users;
         await Team.deleteOne({ _id: teamId });
-        await Task.deleteMany({ owner: { type: "team", id: req.body.teamId } });
+        await Task.deleteMany({
+            owner: await List.findOne({ _id: req.body.teamId })._id,
+        });
+        await List.deleteOne({ owner: { type: "team", id: req.body.teamId } });
         broadcastToClients(req.body.teamId, msg, userList);
         res.status(200).json({
             status: "successs",

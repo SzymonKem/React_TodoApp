@@ -13,8 +13,9 @@ const TeamSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         require: true,
     },
-    tags: {
-        type: Array,
+    list: {
+        type: mongoose.Types.ObjectId,
+        require: true,
     },
 });
 

@@ -110,6 +110,7 @@ function Teams({ currentUser, listOwner, setListOwner, teamUpdateHandler }) {
             owner: currentUser.id,
             users: [currentUser.id],
         };
+        console.log("New team");
         console.log(newTeam);
         try {
             const response = await fetch("http://localhost:3000/teams/create", {
@@ -118,9 +119,10 @@ function Teams({ currentUser, listOwner, setListOwner, teamUpdateHandler }) {
                 body: JSON.stringify(newTeam),
             });
             const data = await response.json();
-            newTeam._id = data.data;
-            console.log(newTeam);
-            setTeamsList([...teamsList, newTeam]);
+            const receivedTeam = data.data;
+            console.log("New team after request");
+            console.log(receivedTeam);
+            setTeamsList([...teamsList, receivedTeam]);
         } catch (err) {
             console.log(err.message);
         }
@@ -168,7 +170,11 @@ function Teams({ currentUser, listOwner, setListOwner, teamUpdateHandler }) {
                                 team._id == listOwner.id ? "activeTeam" : null
                             }
                             onClick={() =>
-                                setListOwner({ type: "team", id: team._id })
+                                setListOwner({
+                                    type: "team",
+                                    id: team._id,
+                                    list: team.list,
+                                })
                             }
                         >
                             {team.teamName}
