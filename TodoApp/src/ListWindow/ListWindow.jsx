@@ -22,6 +22,10 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
         socket.current.addEventListener("open", () => {
             console.log("opened socket connection");
         });
+        socket.current.addEventListener("ping", () => {
+            console.log("Received ping, sending pong");
+            socket.current.pong();
+        });
         socket.current.addEventListener("message", (event) => {
             console.log("Event: ", event);
             console.log("Event data: ", event.data);
@@ -34,6 +38,9 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
                     userUpdateHandlerRef.current();
                 }
             }
+        });
+        socket.current.addEventListener("close", () => {
+            console.log("Connection closed");
         });
 
         const getTasks = async () => {

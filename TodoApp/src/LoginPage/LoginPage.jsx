@@ -56,7 +56,12 @@ export default function LoginPage({ setIsLoggedIn, setCurrentUser }) {
 
     return (
         <form onSubmit={handleSubmit} method="post" className="loginForm">
-            <input type="text" placeholder="Username" ref={usernameRef} />
+            <input
+                type="text"
+                placeholder="Username"
+                ref={usernameRef}
+                className="loginUsername"
+            />
             <br />
             <input type="password" placeholder="Password" ref={passRef} />
             <br />
