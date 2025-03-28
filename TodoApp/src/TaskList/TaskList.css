@@ -153,7 +153,8 @@ p {
 }
 
 .tag {
-    background-color: var(--black);
+    background-color: #0281ff;
+    border: 3px solid var(--black);
     color: white;
     padding: 5px;
     border-radius: 20px;

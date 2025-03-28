@@ -209,3 +209,32 @@ body {
 .tagListUl > .createTag:hover > a > svg {
     transform: rotate(180deg);
 }
+
+.createTag input {
+    width: 50%;
+    background-color: transparent;
+    outline: none;
+    border: 3px solid var(--light-blue);
+    border-radius: 20px;
+    color: white;
+}
+
+.filtersTag > a > svg {
+    transition: 0.5s;
+}
+
+.filtersTag > a > svg:hover {
+    color: red;
+}
+
+.tagListUl > .selectedTag {
+    background-color: #0281ff;
+}
+
+.taskTags {
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1%;
+}

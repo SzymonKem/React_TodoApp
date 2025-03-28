@@ -182,11 +182,13 @@ function Task({
             className={className}
         >
             <h2>{task.name}</h2>
-            {task.tags.map((tag) => (
-                <span className="tag" key={tag}>
-                    {tag}
-                </span>
-            ))}
+            <div className="taskTags">
+                {task.tags.map((tag) => (
+                    <span className="tag" key={tag}>
+                        {tag}
+                    </span>
+                ))}
+            </div>
             <p>{task.desc}</p>
             {!task.isDone ? (
                 <div className="taskELementButtons">

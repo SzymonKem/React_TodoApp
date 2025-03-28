@@ -179,3 +179,61 @@ export async function DeleteUserFromTeam(req, res) {
         });
     }
 }
+
+export async function GetTags(req, res) {
+    try {
+        const list = await List.findOne({ _id: req.query.list });
+        res.status(200).json({
+            status: "success",
+            data: list.tags,
+            message: "successfully got tasks",
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: "error",
+            message: "Unexpected error happened: " + err.message,
+        });
+    }
+}
+
+export async function AddTag(req, res) {
+    try {
+        const list = await List.findOne({ _id: req.body.list });
+        if (list.tags.includes(req.body.tagName)) {
+            return res.status(400).json({
+                status: "failed",
+                message: "This tag already exists in this list",
+            });
+        }
+        await List.updateOne(
+            { _id: req.body.list },
+            { $push: { tags: req.body.tagName } }
+        );
+        return res.status(200).json({
+            status: "success",
+            message: "successfully added tag to list",
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: "error",
+            message: "Unexpected error happened: " + err.message,
+        });
+    }
+}
+export async function DeleteTag(req, res) {
+    try {
+        await List.updateOne(
+            { _id: req.body.list },
+            { $pull: { tags: req.body.tagName } }
+        );
+        res.status(200).json({
+            status: "success",
+            message: "successfully deleted task",
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: "error",
+            message: "Unexpected error happened: " + err.message,
+        });
+    }
+}
