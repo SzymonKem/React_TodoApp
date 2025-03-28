@@ -11,6 +11,7 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
     const [nextId, setNextId] = useState(0);
     const [listOwner, setListOwner] = useState(currentUser);
     const [visible, setVisible] = useState(false);
+    const [editingTask, setEditingTask] = useState(false);
     const [tags, setTags] = useState(["in progress", "done"]);
     const socket = useRef(null);
     const teamUpdateHandlerRef = useRef(null);
@@ -71,7 +72,8 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
         getTasks();
         return () => socket.current.close();
     }, [listOwner]);
-    const className = visible ? "listWindow no-scroll" : "listWindow";
+    const className =
+        visible || editingTask ? "listWindow no-scroll" : "listWindow";
     return (
         <div className={className}>
             <Sidebar
@@ -114,6 +116,8 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
                 listOwner={listOwner}
                 renderItems={renderItems}
                 tags={tags}
+                editingTask={editingTask}
+                setEditingTask={setEditingTask}
             />
         </div>
     );

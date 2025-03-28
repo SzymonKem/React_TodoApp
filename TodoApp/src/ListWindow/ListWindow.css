@@ -172,6 +172,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
     gap: 1%;
     width: 100%;
     margin: 0;
@@ -182,6 +183,7 @@ body {
     background-color: var(--light-blue);
     border-radius: 20px;
     transition: 0.5s;
+    margin-top: 8px;
 }
 
 .tagListUl > li:hover {

@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react";
+
 export default function Filters({ setRenderItems, tags, setTags, listOwner }) {
     const [addingTag, setAddingTag] = useState(false);
     const tagInputRef = useRef(null);
-    console.log("tags");
-    console.log(tags);
+
+    const prevTagsRef = useRef();
+
     useEffect(() => {
         const getTags = async () => {
             try {
@@ -11,32 +13,56 @@ export default function Filters({ setRenderItems, tags, setTags, listOwner }) {
                     "http://localhost:3000/teams/getTags?list=" + listOwner.list
                 );
                 const data = await response.json();
-                setTags(data.data);
+                // Update only if tags have changed
+                if (
+                    JSON.stringify(prevTagsRef.current) !==
+                    JSON.stringify(data.data)
+                ) {
+                    setTags(data.data);
+                    prevTagsRef.current = data.data;
+                }
             } catch (err) {
                 console.log(err.message);
             }
         };
         getTags();
-    }, [listOwner]);
+    }, [listOwner, setTags]);
 
     async function handleTagAdd(e) {
         e.preventDefault();
-        fetch("http://localhost:3000/teams/addTag", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                list: listOwner.list,
-                tagName: tagInputRef.current.value,
-            }),
-        });
+        const newTag = tagInputRef.current.value;
+
+        try {
+            await fetch("http://localhost:3000/teams/addTag", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    list: listOwner.list,
+                    tagName: newTag,
+                }),
+            });
+            const response = await fetch(
+                "http://localhost:3000/teams/getTags?list=" + listOwner.list
+            );
+            const data = await response.json();
+            setTags(data.data);
+        } catch (err) {
+            console.log(err.message);
+        }
     }
+
     async function handleTagDelete(tag) {
         try {
-            fetch("http://localhost:3000/teams/deleteTag", {
+            await fetch("http://localhost:3000/teams/deleteTag", {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ list: listOwner.list, tagName: tag }),
             });
+            const response = await fetch(
+                "http://localhost:3000/teams/getTags?list=" + listOwner.list
+            );
+            const data = await response.json();
+            setTags(data.data);
         } catch (err) {
             console.log(err.message);
         }
@@ -46,11 +72,9 @@ export default function Filters({ setRenderItems, tags, setTags, listOwner }) {
         <>
             <div className="tagList">
                 <ul className="tagListUl">
-                    {console.log("Logging tags: ")}
-                    {console.log(tags)}
                     {tags.map((tag) => (
                         <li key={tag} className="filtersTag">
-                            {tag != "in progress" && tag != "done" && (
+                            {tag !== "in progress" && tag !== "done" && (
                                 <a
                                     href="#"
                                     onClick={() => handleTagDelete(tag)}
@@ -79,7 +103,7 @@ export default function Filters({ setRenderItems, tags, setTags, listOwner }) {
                             <form
                                 action="#"
                                 method="post"
-                                onSubmit={(e) => handleTagAdd(e)}
+                                onSubmit={handleTagAdd}
                             >
                                 <a href="#" onClick={() => setAddingTag(false)}>
                                     <svg
@@ -121,25 +145,13 @@ export default function Filters({ setRenderItems, tags, setTags, listOwner }) {
                 </ul>
             </div>
             <div className="renderControls">
-                <button
-                    onClick={() => {
-                        setRenderItems("all");
-                    }}
-                >
+                <button onClick={() => setRenderItems("all")}>
                     Show all tasks
                 </button>
-                <button
-                    onClick={() => {
-                        setRenderItems("inProgress");
-                    }}
-                >
+                <button onClick={() => setRenderItems("inProgress")}>
                     Show tasks in progress
                 </button>
-                <button
-                    onClick={() => {
-                        setRenderItems("done");
-                    }}
-                >
+                <button onClick={() => setRenderItems("done")}>
                     Show done tasks
                 </button>
             </div>

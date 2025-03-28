@@ -159,3 +159,37 @@ p {
     padding: 5px;
     border-radius: 20px;
 }
+
+.invisibleEditPopUp {
+    display: none;
+}
+
+.visibleEditPopUp {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    z-index: 5;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.popUpClose {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+}
+
+.popUpClose:hover {
+    color: red;
+}
+
+.popUpClose > svg {
+    width: 30px;
+    height: 30px;
+}

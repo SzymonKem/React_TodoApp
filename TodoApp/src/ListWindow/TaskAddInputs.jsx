@@ -6,6 +6,7 @@ export default function TaskAddInputs({
     taskElementsList,
     setTaskElementsList,
     setVisible,
+    setNoScroll,
     tags,
 }) {
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
@@ -38,6 +39,7 @@ export default function TaskAddInputs({
         descRef.current.value = "";
         handleInput();
         setVisible(false);
+        setNoScroll(false);
         setSelectedTags(["in progress"]);
     }
     return (
