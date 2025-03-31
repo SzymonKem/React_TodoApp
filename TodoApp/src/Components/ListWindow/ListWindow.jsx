@@ -1,10 +1,10 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import TaskList from "../TaskList/TaskList";
 import Sidebar from "../Sidebar/Sidebar";
 import TaskAddPopUp from "./TaskAddPopUp";
 import Filters from "./Filters";
 import "./ListWindow.css";
-import { useWebSocket } from "../WebSocketProvider";
+import { useWebSocket } from "../../Contexts/WebSocketProvider";
 
 export default function ListWindow({
     currentUser,
@@ -12,16 +12,13 @@ export default function ListWindow({
     listOwner,
     setListOwner,
 }) {
-    const [renderItems, setRenderItems] = useState("all");
+    // const [renderItems, setRenderItems] = useState("all");
     const [taskElementsList, setTaskElementsList] = useState([]);
     const [nextId, setNextId] = useState(0);
-    // const [listOwner, setListOwner] = useState(currentUser);
     const [visible, setVisible] = useState(false);
     const [editingTask, setEditingTask] = useState(false);
     const [tags, setTags] = useState(["in progress", "done"]);
     const { addWebSocketEventListener, isConnected } = useWebSocket();
-    const teamUpdateHandlerRef = useRef(null);
-    const userUpdateHandlerRef = useRef(null);
 
     useEffect(() => {
         if (!isConnected) return;
@@ -68,12 +65,6 @@ export default function ListWindow({
                 setTaskElementsList={setTaskElementsList}
                 currentUser={currentUser}
                 listOwner={listOwner}
-                teamUpdateHandler={(fun) =>
-                    (teamUpdateHandlerRef.current = fun)
-                }
-                userUpdateHandler={(fun) =>
-                    (userUpdateHandlerRef.current = fun)
-                }
             />
             <TaskAddPopUp
                 nextId={nextId}
@@ -90,7 +81,7 @@ export default function ListWindow({
                     Add task
                 </button>
                 <Filters
-                    setRenderItems={setRenderItems}
+                    // setRenderItems={setRenderItems}
                     tags={tags}
                     setTags={setTags}
                     listOwner={listOwner}
@@ -101,7 +92,7 @@ export default function ListWindow({
                 taskElementsList={taskElementsList}
                 setTaskElementsList={setTaskElementsList}
                 listOwner={listOwner}
-                renderItems={renderItems}
+                // renderItems={renderItems}
                 tags={tags}
                 editingTask={editingTask}
                 setEditingTask={setEditingTask}

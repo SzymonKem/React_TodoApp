@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useWebSocket } from "../WebSocketProvider";
+import { useWebSocket } from "../../Contexts/WebSocketProvider";
 
 export default function Teams({
     currentUser,

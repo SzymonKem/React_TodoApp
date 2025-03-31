@@ -8,8 +8,6 @@ export default function Sidebar({
     setListOwner,
     currentUser,
     listOwner,
-    teamUpdateHandler,
-    userUpdateHandler,
 }) {
     return (
         <div className="sidebar">
@@ -25,15 +23,10 @@ export default function Sidebar({
                     currentUser={currentUser}
                     listOwner={listOwner}
                     setListOwner={setListOwner}
-                    teamUpdateHandler={teamUpdateHandler}
                 />
             </nav>
             {listOwner.type === "team" && (
-                <UserList
-                    listOwner={listOwner}
-                    currentUser={currentUser}
-                    userUpdateHandler={userUpdateHandler}
-                />
+                <UserList listOwner={listOwner} currentUser={currentUser} />
             )}
         </div>
     );

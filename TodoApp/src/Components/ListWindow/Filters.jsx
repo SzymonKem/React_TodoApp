@@ -1,12 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { useWebSocket } from "../WebSocketProvider";
+import { useWebSocket } from "../../Contexts/WebSocketProvider";
 
 export default function Filters({ setRenderItems, tags, setTags, listOwner }) {
     const [addingTag, setAddingTag] = useState(false);
     const tagInputRef = useRef(null);
     const { addWebSocketEventListener, isConnected } = useWebSocket();
-
-    const prevTagsRef = useRef();
 
     useEffect(() => {
         const getTags = async () => {
@@ -16,14 +14,7 @@ export default function Filters({ setRenderItems, tags, setTags, listOwner }) {
                     "http://localhost:3000/teams/getTags?list=" + listOwner.list
                 );
                 const data = await response.json();
-                // Update only if tags have changed
-                if (
-                    JSON.stringify(prevTagsRef.current) !==
-                    JSON.stringify(data.data)
-                ) {
-                    setTags(data.data);
-                    prevTagsRef.current = data.data;
-                }
+                setTags(data.data);
             } catch (err) {
                 console.log(err.message);
             }
