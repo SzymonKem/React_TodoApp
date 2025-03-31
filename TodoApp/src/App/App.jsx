@@ -1,17 +1,30 @@
 import "./App.css";
 import ListWindow from "../ListWindow/ListWindow.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LoginPage from "../LoginPage/LoginPage.jsx";
+import { WebSocketProvider } from "../WebSocketProvider.jsx";
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
-    if (isLoggedIn) {
+    const [listOwner, setListOwner] = useState(null);
+
+    useEffect(() => {
+        if (currentUser && !listOwner) {
+            setListOwner(currentUser);
+        }
+    }, [currentUser]);
+
+    if (isLoggedIn && listOwner) {
         return (
-            <ListWindow
-                currentUser={currentUser}
-                setIsLoggedIn={setIsLoggedIn}
-            />
+            <WebSocketProvider currentUser={currentUser} listOwner={listOwner}>
+                <ListWindow
+                    currentUser={currentUser}
+                    setIsLoggedIn={setIsLoggedIn}
+                    listOwner={listOwner}
+                    setListOwner={setListOwner}
+                />
+            </WebSocketProvider>
         );
     } else {
         return (

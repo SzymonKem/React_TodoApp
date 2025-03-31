@@ -1,13 +1,16 @@
 import { useState, useRef, useEffect } from "react";
+import { useWebSocket } from "../WebSocketProvider";
 
 export default function Filters({ setRenderItems, tags, setTags, listOwner }) {
     const [addingTag, setAddingTag] = useState(false);
     const tagInputRef = useRef(null);
+    const { addWebSocketEventListener, isConnected } = useWebSocket();
 
     const prevTagsRef = useRef();
 
     useEffect(() => {
         const getTags = async () => {
+            if (!isConnected) return;
             try {
                 const response = await fetch(
                     "http://localhost:3000/teams/getTags?list=" + listOwner.list
@@ -25,8 +28,14 @@ export default function Filters({ setRenderItems, tags, setTags, listOwner }) {
                 console.log(err.message);
             }
         };
+        addWebSocketEventListener("message", (event) => {
+            if (event.data == "tagsUpdated") {
+                console.log("tags updated");
+                getTags();
+            }
+        });
         getTags();
-    }, [listOwner, setTags]);
+    }, [listOwner, setTags, isConnected]);
 
     async function handleTagAdd(e) {
         e.preventDefault();
@@ -41,11 +50,8 @@ export default function Filters({ setRenderItems, tags, setTags, listOwner }) {
                     tagName: newTag,
                 }),
             });
-            const response = await fetch(
-                "http://localhost:3000/teams/getTags?list=" + listOwner.list
-            );
-            const data = await response.json();
-            setTags(data.data);
+            setTags([...tags, newTag]);
+            setAddingTag(false);
         } catch (err) {
             console.log(err.message);
         }

@@ -35,7 +35,7 @@ export function Socket(ws, req) {
 
 export async function broadcastToClients(teamId, msg, teamsUsers) {
     // console.log(teams);
-    if (msg == "tasksUpdated") {
+    if (msg == "tasksUpdated" || msg == "tagsUpdated") {
         if (teams[teamId]) {
             teams[teamId].forEach((ws) => {
                 console.log("sent");

@@ -7,7 +7,7 @@ const ListSchema = new mongoose.Schema({
             require: true,
         },
         id: {
-            type: mongoose.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             require: true,
         },
     },

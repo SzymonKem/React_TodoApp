@@ -5,7 +5,7 @@ const TaskSchema = new mongoose.Schema({
         type: Number,
     },
     list: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
     },
     isDone: {
         type: Boolean,
@@ -20,7 +20,7 @@ const TaskSchema = new mongoose.Schema({
         type: Boolean,
     },
     tags: {
-        type: Array,
+        type: [String],
     },
 });
 

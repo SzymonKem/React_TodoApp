@@ -209,6 +209,9 @@ export async function AddTag(req, res) {
             { _id: req.body.list },
             { $push: { tags: req.body.tagName } }
         );
+        if (list.owner.type == "team") {
+            broadcastToClients(list.owner.id, "tagsUpdated");
+        }
         return res.status(200).json({
             status: "success",
             message: "successfully added tag to list",
@@ -222,10 +225,18 @@ export async function AddTag(req, res) {
 }
 export async function DeleteTag(req, res) {
     try {
-        await List.updateOne(
+        const list = await List.findOneAndUpdate(
             { _id: req.body.list },
             { $pull: { tags: req.body.tagName } }
         );
+
+        await Task.updateMany(
+            { tags: req.body.tagName },
+            { $pull: { tags: req.body.tagName } }
+        );
+        if (list.owner.type == "team") {
+            broadcastToClients(list.owner.id, "tagsUpdated");
+        }
         res.status(200).json({
             status: "success",
             message: "successfully deleted task",

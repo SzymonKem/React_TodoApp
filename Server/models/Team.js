@@ -10,11 +10,11 @@ const TeamSchema = new mongoose.Schema({
         require: true,
     },
     owner: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         require: true,
     },
     list: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         require: true,
     },
 });

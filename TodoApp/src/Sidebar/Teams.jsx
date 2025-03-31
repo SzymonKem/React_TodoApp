@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
+import { useWebSocket } from "../WebSocketProvider";
 
 export default function Teams({
     currentUser,
     listOwner,
     setListOwner,
-    teamUpdateHandler,
+    // teamUpdateHandler,
 }) {
     const [addingTeam, setAddingTeam] = useState(false);
     const [creationInputValue, setcreationInputValue] = useState("");
     const [teamsList, setTeamsList] = useState([]);
+    const { addWebSocketEventListener, isConnected } = useWebSocket();
     useEffect(() => {
         const getTeams = async () => {
+            if (!isConnected) return;
             try {
                 // console.log(currentUser.id);
                 const response = await fetch(
@@ -34,10 +37,14 @@ export default function Teams({
                 console.log(err.message);
             }
         };
-
-        teamUpdateHandler(getTeams);
+        addWebSocketEventListener("message", (event) => {
+            if (event.data == "teamsUpdated") {
+                console.log("teamsUpdadted");
+                getTeams();
+            }
+        });
         getTeams();
-    }, [listOwner]);
+    }, [listOwner, addWebSocketEventListener]);
     async function handleTeamAdd(currentUser, e) {
         e.preventDefault();
         // console.log("current user: " + currentUser);

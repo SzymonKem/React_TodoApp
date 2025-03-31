@@ -4,50 +4,27 @@ import Sidebar from "../Sidebar/Sidebar";
 import TaskAddPopUp from "./TaskAddPopUp";
 import Filters from "./Filters";
 import "./ListWindow.css";
+import { useWebSocket } from "../WebSocketProvider";
 
-export default function ListWindow({ currentUser, setIsLoggedIn }) {
+export default function ListWindow({
+    currentUser,
+    setIsLoggedIn,
+    listOwner,
+    setListOwner,
+}) {
     const [renderItems, setRenderItems] = useState("all");
     const [taskElementsList, setTaskElementsList] = useState([]);
     const [nextId, setNextId] = useState(0);
-    const [listOwner, setListOwner] = useState(currentUser);
+    // const [listOwner, setListOwner] = useState(currentUser);
     const [visible, setVisible] = useState(false);
     const [editingTask, setEditingTask] = useState(false);
     const [tags, setTags] = useState(["in progress", "done"]);
-    const socket = useRef(null);
+    const { addWebSocketEventListener, isConnected } = useWebSocket();
     const teamUpdateHandlerRef = useRef(null);
     const userUpdateHandlerRef = useRef(null);
 
     useEffect(() => {
-        socket.current = new WebSocket(
-            "ws://localhost:3000?listOwner=" +
-                JSON.stringify(listOwner) +
-                "&currentUser=" +
-                JSON.stringify(currentUser)
-        );
-        socket.current.addEventListener("open", () => {
-            console.log("opened socket connection");
-        });
-        socket.current.addEventListener("ping", () => {
-            console.log("Received ping, sending pong");
-            socket.current.pong();
-        });
-        socket.current.addEventListener("message", (event) => {
-            console.log("Event: ", event);
-            console.log("Event data: ", event.data);
-            if (event.data == "tasksUpdated") {
-                getTasks();
-            } else if (event.data == "teamsUpdated") {
-                console.log("TeamsUpdated");
-                teamUpdateHandlerRef.current();
-                if (listOwner.type == "team") {
-                    userUpdateHandlerRef.current();
-                }
-            }
-        });
-        socket.current.addEventListener("close", () => {
-            console.log("Connection closed");
-        });
-
+        if (!isConnected) return;
         const getTasks = async () => {
             try {
                 console.log("Logging listOwner from getTasks:");
@@ -69,9 +46,18 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
                 console.error("Error fetching tasks:", error);
             }
         };
+        console.log("Adding websocket listener: ");
+        addWebSocketEventListener("message", (event) => {
+            console.log("Received message tasks");
+            console.log(event.data);
+            if (event.data == "tasksUpdated" || event.data == "tagsUpdated") {
+                getTasks();
+            }
+        });
+
         getTasks();
-        return () => socket.current.close();
-    }, [listOwner]);
+        return () => {};
+    }, [listOwner, addWebSocketEventListener, isConnected]);
     const className =
         visible || editingTask ? "listWindow no-scroll" : "listWindow";
     return (
@@ -108,6 +94,7 @@ export default function ListWindow({ currentUser, setIsLoggedIn }) {
                     tags={tags}
                     setTags={setTags}
                     listOwner={listOwner}
+                    // getTasks={getTasks}
                 />
             </div>
             <TaskList
