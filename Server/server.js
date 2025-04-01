@@ -38,7 +38,6 @@ mongoose
 Router(server);
 server.ws("/", Socket);
 const pingInterval = setInterval(() => {
-    // console.log(webSocket.getWss("/").clients);
     webSocket.getWss("/").clients.forEach((ws) => {
         if (!ws.isAlive) {
             console.log("inactive connection");

@@ -32,8 +32,6 @@ export default function LoginPage({ setIsLoggedIn, setCurrentUser }) {
     async function handleSubmit(e) {
         e.preventDefault();
         const submitter = e.nativeEvent.submitter.name;
-        // console.log(checkboxRef);
-        // console.log(checkboxRef.current.checked);
 
         try {
             const response = await fetch(

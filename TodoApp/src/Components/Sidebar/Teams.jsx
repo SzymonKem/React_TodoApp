@@ -15,7 +15,6 @@ export default function Teams({
         const getTeams = async () => {
             if (!isConnected) return;
             try {
-                // console.log(currentUser.id);
                 const response = await fetch(
                     "http://localhost:3000/teams/get?userId=" + currentUser.id
                 );
@@ -47,8 +46,6 @@ export default function Teams({
     }, [listOwner, addWebSocketEventListener]);
     async function handleTeamAdd(currentUser, e) {
         e.preventDefault();
-        // console.log("current user: " + currentUser);
-        // console.log("creationInputValue: " + creationInputValue);
         const newTeam = {
             teamName: creationInputValue,
             owner: currentUser.id,
@@ -123,8 +120,6 @@ export default function Teams({
                         >
                             {team.teamName}
                         </a>
-                        {/* {console.log(currentUser.id)}
-                        {console.log(team.ownerId)} */}
                         {currentUser.id == team.owner && (
                             <a
                                 href="#"

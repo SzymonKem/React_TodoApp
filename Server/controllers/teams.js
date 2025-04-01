@@ -69,10 +69,8 @@ export async function DeleteTeam(req, res) {
 
 export async function GetTeams(req, res) {
     const userId = req.query.userId;
-    // console.log(userId);
     try {
         const gotTeams = await Team.find({ users: userId });
-        // console.log(gotTeams);
         res.status(200).json({
             status: "Success",
             data: gotTeams,
@@ -99,8 +97,6 @@ export async function GetTeamUsers(req, res) {
         const owner = await User.findOne({ _id: foundTeam.owner });
         const ownerId = owner._id;
         foundTeam.owner = owner.username;
-        // console.log(foundTeam.owner);
-        // console.log(ownerId);
 
         res.status(200).json({
             status: "success",
@@ -116,10 +112,8 @@ export async function GetTeamUsers(req, res) {
 }
 
 export async function AddUserToTeam(req, res) {
-    // console.log(req.body);
     try {
         const user = await User.findOne({ username: req.body.username });
-        // console.log(user);
         if (!user) {
             return res.status(404).json({
                 status: "failed",

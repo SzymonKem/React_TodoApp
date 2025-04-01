@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import TaskList from "../TaskList/TaskList";
 import Sidebar from "../Sidebar/Sidebar";
 import TaskAddPopUp from "./TaskAddPopUp";
@@ -12,7 +12,6 @@ export default function ListWindow({
     listOwner,
     setListOwner,
 }) {
-    // const [renderItems, setRenderItems] = useState("all");
     const [taskElementsList, setTaskElementsList] = useState([]);
     const [nextId, setNextId] = useState(0);
     const [visible, setVisible] = useState(false);
@@ -20,9 +19,8 @@ export default function ListWindow({
     const [tags, setTags] = useState(["in progress", "done"]);
     const { addWebSocketEventListener, isConnected } = useWebSocket();
 
-    useEffect(() => {
-        if (!isConnected) return;
-        const getTasks = async () => {
+    const getTasks = useCallback(
+        async (type) => {
             try {
                 console.log("Logging listOwner from getTasks:");
                 console.log(listOwner);
@@ -33,6 +31,9 @@ export default function ListWindow({
                 const data = await response.json();
                 console.log(data);
                 const receivedTaskList = data.data;
+                if (type == "allTasksRefresh") {
+                    return receivedTaskList;
+                }
                 setTaskElementsList(receivedTaskList);
                 setNextId(
                     receivedTaskList.length > 0
@@ -42,7 +43,11 @@ export default function ListWindow({
             } catch (error) {
                 console.error("Error fetching tasks:", error);
             }
-        };
+        },
+        [listOwner]
+    );
+    useEffect(() => {
+        if (!isConnected) return;
         console.log("Adding websocket listener: ");
         addWebSocketEventListener("message", (event) => {
             console.log("Received message tasks");
@@ -54,7 +59,7 @@ export default function ListWindow({
 
         getTasks();
         return () => {};
-    }, [listOwner, addWebSocketEventListener, isConnected]);
+    }, [listOwner, addWebSocketEventListener, isConnected, getTasks]);
     const className =
         visible || editingTask ? "listWindow no-scroll" : "listWindow";
     return (
@@ -81,18 +86,18 @@ export default function ListWindow({
                     Add task
                 </button>
                 <Filters
-                    // setRenderItems={setRenderItems}
                     tags={tags}
                     setTags={setTags}
                     listOwner={listOwner}
-                    // getTasks={getTasks}
+                    taskElementsList={taskElementsList}
+                    setTaskElementsList={setTaskElementsList}
+                    getTasks={getTasks}
                 />
             </div>
             <TaskList
                 taskElementsList={taskElementsList}
                 setTaskElementsList={setTaskElementsList}
                 listOwner={listOwner}
-                // renderItems={renderItems}
                 tags={tags}
                 editingTask={editingTask}
                 setEditingTask={setEditingTask}

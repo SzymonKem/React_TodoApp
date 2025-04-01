@@ -1,8 +1,17 @@
 import { useState, useRef, useEffect } from "react";
 import { useWebSocket } from "../../Contexts/WebSocketProvider";
 
-export default function Filters({ setRenderItems, tags, setTags, listOwner }) {
+export default function Filters({
+    tags,
+    setTags,
+    listOwner,
+    taskElementsList,
+    setTaskElementsList,
+    getTasks,
+}) {
     const [addingTag, setAddingTag] = useState(false);
+    const [filterTags, setFilterTags] = useState([]);
+    const [allTasks, setAllTasks] = useState([]);
     const tagInputRef = useRef(null);
     const { addWebSocketEventListener, isConnected } = useWebSocket();
 
@@ -26,7 +35,7 @@ export default function Filters({ setRenderItems, tags, setTags, listOwner }) {
             }
         });
         getTags();
-    }, [listOwner, setTags, isConnected]);
+    }, [listOwner, isConnected, addWebSocketEventListener, setTags]);
 
     async function handleTagAdd(e) {
         e.preventDefault();
@@ -65,12 +74,57 @@ export default function Filters({ setRenderItems, tags, setTags, listOwner }) {
         }
     }
 
+    useEffect(() => {
+        async function getAllTasks() {
+            setAllTasks(await getTasks("allTasksRefresh"));
+            console.log("Updating all tasks");
+        }
+
+        getAllTasks();
+    }, [taskElementsList, getTasks]);
+
+    useEffect(() => {
+        console.log("All tasks: ", allTasks);
+        console.log("filterTags: ", filterTags);
+        if (filterTags.length == 0) {
+            if (JSON.stringify(taskElementsList) !== JSON.stringify(allTasks)) {
+                setTaskElementsList(allTasks);
+            }
+            return;
+        }
+        const matchingTasks = allTasks.filter((task) =>
+            task.tags.some((tag) => filterTags.includes(tag))
+        );
+        console.log("Matching tasks: ", matchingTasks);
+        if (
+            JSON.stringify(matchingTasks) !== JSON.stringify(taskElementsList)
+        ) {
+            setTaskElementsList(matchingTasks);
+        }
+    }, [filterTags, setTaskElementsList, allTasks, taskElementsList]);
+
+    function handleTagSelect(e) {
+        e.preventDefault();
+        filterTags.includes(e.target.textContent)
+            ? setFilterTags(
+                  filterTags.filter(
+                      (filterTag) => filterTag != e.target.textContent
+                  )
+              )
+            : setFilterTags([...filterTags, e.target.textContent]);
+    }
+
     return (
         <>
             <div className="tagList">
                 <ul className="tagListUl">
                     {tags.map((tag) => (
-                        <li key={tag} className="filtersTag">
+                        <li
+                            key={tag}
+                            className={
+                                filterTags.includes(tag) ? "selectedTag" : null
+                            }
+                        >
                             {tag !== "in progress" && tag !== "done" && (
                                 <a
                                     href="#"
@@ -92,7 +146,9 @@ export default function Filters({ setRenderItems, tags, setTags, listOwner }) {
                                     </svg>
                                 </a>
                             )}
-                            <a href="#">{tag}</a>
+                            <a href="#" onClick={handleTagSelect}>
+                                {tag}
+                            </a>
                         </li>
                     ))}
                     <li className="createTag">
@@ -140,17 +196,6 @@ export default function Filters({ setRenderItems, tags, setTags, listOwner }) {
                         )}
                     </li>
                 </ul>
-            </div>
-            <div className="renderControls">
-                <button onClick={() => setRenderItems("all")}>
-                    Show all tasks
-                </button>
-                <button onClick={() => setRenderItems("inProgress")}>
-                    Show tasks in progress
-                </button>
-                <button onClick={() => setRenderItems("done")}>
-                    Show done tasks
-                </button>
             </div>
         </>
     );

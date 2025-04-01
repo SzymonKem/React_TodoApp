@@ -17,7 +17,6 @@ export function Socket(ws, req) {
         const teamId = owner.id;
         if (!teams[teamId]) {
             teams[teamId] = new Set();
-            // console.log(teams[teamId]);
         }
 
         teams[teamId].add(ws);
@@ -34,7 +33,6 @@ export function Socket(ws, req) {
 }
 
 export async function broadcastToClients(teamId, msg, teamsUsers) {
-    // console.log(teams);
     if (msg == "tasksUpdated" || msg == "tagsUpdated") {
         if (teams[teamId]) {
             teams[teamId].forEach((ws) => {
@@ -46,7 +44,6 @@ export async function broadcastToClients(teamId, msg, teamsUsers) {
         }
     }
     if (msg == "teamsUpdated") {
-        // console.log(users);
         console.log(teamsUsers);
         console.log(users);
         users.keys().forEach((user) => {

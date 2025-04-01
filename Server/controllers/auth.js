@@ -1,6 +1,5 @@
 import User from "../models/User.js";
 import List from "../models/List.js";
-// import session, { Cookie } from "express-session";
 import bcrypt from "bcrypt";
 
 export async function Register(req, res) {
@@ -101,14 +100,12 @@ function setCookies(sessionId, userId, res) {
         sameSite: "None",
         maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    // console.log("setting cookie: ", sessionId);
     res.cookie("user", userId, {
         httpOnly: true,
         secure: true,
         sameSite: "None",
         maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    // console.log("setting cookie: ", userId);
 }
 
 export async function CheckRemembered(req, res) {
@@ -138,24 +135,3 @@ export async function Logout(req, res) {
         message: "Successfully logged out",
     });
 }
-
-// export async function getUser(req, res) {
-//     const username = req.query.username;
-//     console.log(username);
-//     try {
-//         const foundUser = await User.findOne({
-//             username: username,
-//         });
-//         const foundUserId = foundUser.toObject()._id;
-//         res.status(200).json({
-//             status: "success",
-//             data: { userId: foundUserId },
-//             message: "Succesfully got userId",
-//         });
-//     } catch (err) {
-//         res.status(500).json({
-//             status: "error",
-//             message: "An unexpected error happened " + err.message,
-//         });
-//     }
-// }

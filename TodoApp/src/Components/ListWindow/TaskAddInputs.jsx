@@ -6,7 +6,6 @@ export default function TaskAddInputs({
     taskElementsList,
     setTaskElementsList,
     setVisible,
-    // setNoScroll,
     tags,
 }) {
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
@@ -39,7 +38,6 @@ export default function TaskAddInputs({
         descRef.current.value = "";
         handleInput();
         setVisible(false);
-        // setNoScroll(false);
         setSelectedTags(["in progress"]);
     }
     return (
@@ -48,7 +46,6 @@ export default function TaskAddInputs({
                 required
                 type="text"
                 onInput={handleInput}
-                // onKeyDown={handleKeyDown}
                 placeholder="Add a task name"
                 ref={nameRef}
             />
@@ -56,7 +53,6 @@ export default function TaskAddInputs({
                 required
                 type="text"
                 onInput={handleInput}
-                // onKeyDown={handleKeyDown}
                 placeholder="Add a task description"
                 ref={descRef}
             />
