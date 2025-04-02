@@ -92,6 +92,7 @@ export default function Teams({
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
+                    className="addIcon"
                 >
                     <path
                         strokeLinecap="round"

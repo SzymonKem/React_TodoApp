@@ -50,12 +50,16 @@ export default function LoginPage({ setIsLoggedIn, setCurrentUser }) {
 
             const data = await response.json();
             console.log(data.data);
-            setCurrentUser({
-                type: "user",
-                id: data.data.foundUserId,
-                list: data.data.usersList,
-            });
-            setIsLoggedIn(true);
+            if (response.ok) {
+                setCurrentUser({
+                    type: "user",
+                    id: data.data.foundUserId,
+                    list: data.data.usersList,
+                });
+                setIsLoggedIn(true);
+            } else {
+                alert(data.message);
+            }
         } catch (err) {
             console.log(err.message);
         }

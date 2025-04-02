@@ -85,16 +85,18 @@ nav > ul > li {
     padding: 0;
 }
 
-.addTeam > svg {
+:has(.addIcon) > .addIcon {
     transition: 0.5s;
 }
 
-.addTeam:hover > svg {
+:has(.addIcon):hover > .addIcon {
     transform: rotate(180deg);
+    color: currentColor;
 }
 
-.userList,
-nav svg:hover {
+.userList svg:hover,
+.teamsList svg:hover,
+.delIcon:hover {
     stroke: red;
 }
 

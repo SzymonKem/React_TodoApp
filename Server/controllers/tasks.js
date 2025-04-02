@@ -7,21 +7,19 @@ let msg = "tasksUpdated";
 
 export async function GetTasks(req, res) {
     const owner = JSON.parse(req.query.owner);
-    console.log("Logging owner from gettasks");
-    console.log(owner);
     owner.id = new mongoose.Types.ObjectId(owner.id);
     try {
-        // console.log("logging owner");
-        // console.log(owner);
         let currentList = await List.findOne({ "owner.id": owner.id });
-        // console.log("current list");
-        // console.log(currentList);
+        console.log("Current list: ", currentList);
         const gotTasks = await Promise.all(
             currentList.tasks.map(async (task) => {
                 const foundTask = await Task.findOne({ _id: task });
-                return foundTask;
+                if (foundTask !== null) {
+                    return foundTask;
+                }
             })
         );
+        console.log("Got tasks: ", gotTasks);
         res.status(200).json({
             status: "success",
             data: gotTasks,

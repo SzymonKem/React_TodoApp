@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function UserList({
-    listOwner,
-    currentUser,
-    userUpdateHandler,
-}) {
+export default function UserList({ listOwner, currentUser }) {
     const [currentTeam, setCurrentTeam] = useState({
         list: [],
         owner: "",
@@ -28,7 +24,6 @@ export default function UserList({
                 console.log(err.message);
             }
         };
-        userUpdateHandler(getUserList);
         getUserList();
     }, [addingUser, listOwner]);
 
@@ -65,12 +60,9 @@ export default function UserList({
     }
     return (
         <div className="userListContainer">
-            {/* {console.log(currentTeam)} */}
             <h2>Owner:</h2>
             <span>{currentTeam.owner}</span>
             <h3>Users: </h3>
-            {/* {console.log(currentUser.id)}
-            {console.log(currentTeam.ownerId)} */}
             {currentUser.id == currentTeam.ownerId && (
                 <a href="#" onClick={() => setAddingUser(true)}>
                     <svg
@@ -79,6 +71,7 @@ export default function UserList({
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
+                        className="addIcon"
                     >
                         <path
                             strokeLinecap="round"

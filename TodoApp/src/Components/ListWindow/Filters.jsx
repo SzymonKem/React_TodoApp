@@ -76,7 +76,11 @@ export default function Filters({
 
     useEffect(() => {
         async function getAllTasks() {
-            setAllTasks(await getTasks("allTasksRefresh"));
+            setAllTasks(
+                (await getTasks("allTasksRefresh")).filter(
+                    (task) => task != null && task != undefined
+                )
+            );
             console.log("Updating all tasks");
         }
 
@@ -136,7 +140,7 @@ export default function Filters({
                                         viewBox="0 0 24 24"
                                         strokeWidth={1.5}
                                         stroke="currentColor"
-                                        className="size-6"
+                                        className="delIcon"
                                     >
                                         <path
                                             strokeLinecap="round"
@@ -165,7 +169,7 @@ export default function Filters({
                                         viewBox="0 0 24 24"
                                         strokeWidth={1.5}
                                         stroke="currentColor"
-                                        className="size-6"
+                                        className="delIcon"
                                     >
                                         <path
                                             strokeLinecap="round"
@@ -184,6 +188,7 @@ export default function Filters({
                                     viewBox="0 0 24 24"
                                     strokeWidth={1.5}
                                     stroke="currentColor"
+                                    className="addIcon"
                                 >
                                     <path
                                         strokeLinecap="round"

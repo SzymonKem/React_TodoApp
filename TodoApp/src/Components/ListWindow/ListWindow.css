@@ -27,8 +27,9 @@
     padding: 10px;
     border: none;
     border-radius: 20px;
-    background-color: var(--light-blue);
-    box-shadow: 3px 3px 12px rgba(214, 218, 255, 1);
+    background-color: var(--black);
+    /* box-shadow: 3px 3px 12px rgba(214, 218, 255, 1); */
+    color: white;
     outline: none;
     transition: 0.5s;
 }
@@ -164,6 +165,9 @@ body {
 
 .tagList {
     width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .tagListUl {

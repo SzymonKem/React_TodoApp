@@ -34,13 +34,14 @@ export default function TaskEditInputs({
             );
             console.log(editedTask);
             if (newName !== "" || newDesc !== "") {
-                fetch("http://localhost:3000/tasks", {
+                await fetch("http://localhost:3000/tasks", {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(editedTask),
                 });
             }
             setEditingTask(false);
+            console.log("tags from handleConfirm: ", tags);
         } catch (err) {
             console.log(err.message);
         }
@@ -67,6 +68,7 @@ export default function TaskEditInputs({
             />
 
             <ul className="tagListUl">
+                {console.log("tags: ", tags)}
                 {tags.map(
                     (tag) =>
                         tag != "in progress" &&
@@ -102,7 +104,7 @@ export default function TaskEditInputs({
             </ul>
             <input
                 type="submit"
-                value="CONFIRM"
+                value="Confirm"
                 className="taskEditFormSubmit"
             />
         </form>

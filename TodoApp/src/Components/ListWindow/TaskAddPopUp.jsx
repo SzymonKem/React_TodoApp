@@ -11,6 +11,7 @@ export default function TaskAddPopUp({
 }) {
     return (
         <div className={visible === true ? "visiblePopUp" : "invisiblePopUp"}>
+            {console.log("TAGS FROM TASKADDPOPUP: ", tags)}
             <div className="popUpContent">
                 <a
                     href="#"
@@ -39,7 +40,7 @@ export default function TaskAddPopUp({
                     taskElementsList={taskElementsList}
                     setTaskElementsList={setTaskElementsList}
                     setVisible={setVisible}
-                    tags={tags}
+                    tags={tags || []}
                 />
             </div>
         </div>

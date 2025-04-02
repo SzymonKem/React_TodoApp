@@ -22,8 +22,7 @@ export default function ListWindow({
     const getTasks = useCallback(
         async (type) => {
             try {
-                console.log("Logging listOwner from getTasks:");
-                console.log(listOwner);
+                console.log("Sending getTasks request");
                 const response = await fetch(
                     "http://localhost:3000/tasks/?owner=" +
                         JSON.stringify(listOwner)

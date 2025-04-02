@@ -1,28 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap");
 
-:root{
-    --black: #171A21;
-    --gray-blue: #7A93AC;
-    --light-blue: #92BCEA;
-    --purple: #AFB3F7;
+:root {
+    --black: #171a21;
+    --gray-blue: #7a93ac;
+    --light-blue: #92bcea;
+    --purple: #afb3f7;
     font-family: "Roboto Condensed", sans-serif;
-
 }
 
-#root{
+#root {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-body{
+body {
     background-color: var(--black);
 }
 
-h1{
+h1 {
     text-align: center;
-    background: linear-gradient(0.25turn, var(--light-blue),var(--purple));
+    background: linear-gradient(0.25turn, var(--light-blue), var(--purple));
     background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 4em;

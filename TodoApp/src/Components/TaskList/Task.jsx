@@ -17,21 +17,23 @@ export default function Task({
         setEditingTaskId(task.id);
     }
 
-    function handleDelete(taskId) {
-        console.log(taskElementsList);
+    async function handleDelete(taskId) {
+        console.log("list from handleDelete: ", taskElementsList);
         setTaskElementsList(taskElementsList.filter((t) => t.id !== taskId));
-        fetch("http://localhost:3000/tasks", {
+        console.log("List set");
+        await fetch("http://localhost:3000/tasks", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id: taskId, list: listOwner.list }),
         });
+        console.log("request processed");
     }
 
     let className = "inProgress task";
 
     return (
         <>
-            {editingTaskId === task.id && (
+            {editingTaskId === task.id && editingTask && (
                 <TaskEditPopUp
                     editingTask={editingTask}
                     setEditingTask={setEditingTask}
