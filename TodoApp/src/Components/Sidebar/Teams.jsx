@@ -43,7 +43,13 @@ export default function Teams({
             }
         });
         getTeams();
-    }, [listOwner, addWebSocketEventListener]);
+    }, [
+        listOwner,
+        addWebSocketEventListener,
+        currentUser,
+        setListOwner,
+        isConnected,
+    ]);
     async function handleTeamAdd(currentUser, e) {
         e.preventDefault();
         const newTeam = {
