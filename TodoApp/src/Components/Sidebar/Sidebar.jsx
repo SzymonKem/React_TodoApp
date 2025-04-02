@@ -1,5 +1,5 @@
 import "./Sidebar.css";
-import LogoutButton from "./LogoutButton";
+import UserIcon from "./UserIcon";
 import MyTasks from "./MyTasks";
 import Teams from "./Teams";
 import UserList from "./UserList";
@@ -11,8 +11,8 @@ export default function Sidebar({
 }) {
     return (
         <div className="sidebar">
+            <UserIcon currentUser={currentUser} setIsLoggedIn={setIsLoggedIn} />
             <h2>ToDo app</h2>
-            <LogoutButton setIsLoggedIn={setIsLoggedIn} />
             <nav>
                 <MyTasks
                     currentUser={currentUser}

@@ -18,6 +18,38 @@
     text-align: center;
 }
 
+.userIcon {
+    position: absolute;
+    top: 30px;
+    left: 10px;
+}
+
+.userIcon > a > svg {
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+}
+
+.logout {
+    z-index: 201;
+    position: relative;
+    left: -15px;
+    top: 15px;
+    padding: 5px 10px;
+    border: 2px solid transparent;
+    background-color: var(--light-blue);
+    color: var(--black);
+    border-radius: 20px;
+    transition: 0.5s;
+}
+
+.logout:hover {
+    border: 2px solid var(--light-blue);
+    background: var(--black);
+    color: white;
+    cursor: pointer;
+}
+
 nav {
     display: flex;
     flex-direction: column;

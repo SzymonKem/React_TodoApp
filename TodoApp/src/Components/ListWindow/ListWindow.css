@@ -95,22 +95,6 @@
     border-radius: 0 20px 20px 0;
 }
 
-.logout {
-    position: relative;
-    left: 0;
-    top: 0;
-    font-size: 1.3em;
-    background: transparent;
-    border: 3px solid rgb(60, 180, 254);
-    color: rgb(60, 180, 254);
-    transition: 0.5s;
-}
-
-.logout:hover {
-    box-shadow: 3px 3px 12px rgb(60, 180, 254);
-    cursor: pointer;
-}
-
 .invisiblePopUp {
     display: none;
 }
