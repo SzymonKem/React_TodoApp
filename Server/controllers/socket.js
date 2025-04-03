@@ -9,10 +9,8 @@ export function Socket(ws, req) {
     ws.on("pong", () => {
         ws.isAlive = true;
     });
-    console.log(req.query.listOwner);
     const user = JSON.parse(req.query.currentUser);
     const owner = JSON.parse(req.query.listOwner);
-    console.log(owner);
     if (owner.type == "team") {
         const teamId = owner.id;
         if (!teams[teamId]) {
@@ -36,7 +34,6 @@ export async function broadcastToClients(teamId, msg, teamsUsers) {
     if (msg == "tasksUpdated" || msg == "tagsUpdated") {
         if (teams[teamId]) {
             teams[teamId].forEach((ws) => {
-                console.log("sent");
                 if (ws.readyState === 1) {
                     ws.send(msg);
                 }
@@ -44,17 +41,10 @@ export async function broadcastToClients(teamId, msg, teamsUsers) {
         }
     }
     if (msg == "teamsUpdated") {
-        console.log(teamsUsers);
-        console.log(users);
         users.keys().forEach((user) => {
-            console.log(user);
             if (teamsUsers.includes(user)) {
-                console.log("team includes user");
-                console.log(users.get(user).readyState);
                 if (users.get(user).readyState === 1) {
-                    console.log("users socket is ready");
                     users.get(user).send(msg);
-                    console.log("Message sent to user: " + msg);
                 }
             }
         });

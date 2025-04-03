@@ -1,7 +1,7 @@
 const Router = (server) => {
     server.get("/", (req, res) => {
         try {
-            res.sendStatus(200);
+            res.sendFile("../build/TodoApp/index.html");
         } catch (err) {
             res.sendStatus(500);
         }

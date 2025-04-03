@@ -9,10 +9,8 @@ let msg = "teamsUpdated";
 
 export async function CreateTeam(req, res) {
     const team = req.body;
-    console.log(team);
     try {
         const newTeam = new Team(team);
-        console.log(newTeam);
         const savedTeam = await newTeam.save();
         const newList = new List({
             owner: { type: "team", id: savedTeam._id },
@@ -20,15 +18,11 @@ export async function CreateTeam(req, res) {
             tasks: [],
         });
         const savedList = await newList.save();
-        console.log("saved list");
-        console.log(savedList);
         const updatedTeam = await Team.findOneAndUpdate(
             { _id: savedTeam._id },
             { $set: { list: savedList._id } },
             { new: true }
         );
-        console.log("Updated team");
-        console.log(updatedTeam);
         res.status(200).json({
             status: "success",
             data: updatedTeam,
@@ -43,9 +37,7 @@ export async function CreateTeam(req, res) {
 }
 
 export async function DeleteTeam(req, res) {
-    console.log(req.body.teamId);
     const teamId = new mongoose.Types.ObjectId(req.body.teamId);
-    console.log(teamId);
     try {
         const teamsUsers = await Team.findOne({ _id: teamId });
         const userList = teamsUsers.users;
@@ -125,7 +117,7 @@ export async function AddUserToTeam(req, res) {
         if (userList.includes(user._id)) {
             return res.status(400).json({
                 status: "failed",
-                message: "this user is already in the team",
+                message: "This user is already in the team",
             });
         }
         await Team.updateOne(
@@ -134,8 +126,6 @@ export async function AddUserToTeam(req, res) {
         );
         teamsUsers = await Team.findOne({ _id: req.body.teamId });
         userList = teamsUsers.users;
-        console.log(userList);
-        console.log("added user");
         broadcastToClients(req.body.teamId, msg, userList);
         return res.status(200).json({
             status: "success",
@@ -150,11 +140,9 @@ export async function AddUserToTeam(req, res) {
 }
 
 export async function DeleteUserFromTeam(req, res) {
-    console.log(req.body);
     try {
         const foundUser = await User.findOne({ username: req.body.user });
         const idToDelete = foundUser._id.toString();
-        console.log(idToDelete);
         const teamsUsers = await Team.findOne({ _id: req.body.teamId });
         const userList = teamsUsers.users;
         await Team.updateOne(

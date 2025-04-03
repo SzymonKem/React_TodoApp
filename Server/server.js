@@ -11,6 +11,7 @@ import Teams from "./routes/teams.js";
 import { Socket } from "./controllers/socket.js";
 const server = express();
 const webSocket = expressWs(server);
+
 const port = 3000;
 
 server.use(

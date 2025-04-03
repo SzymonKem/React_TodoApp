@@ -9,6 +9,7 @@ export default function UserList({ listOwner, currentUser }) {
     });
     const [addingUser, setAddingUser] = useState(false);
     const [creationInputValue, setCreationInputValue] = useState("");
+    const [responseError, setResponseError] = useState("");
     const userFormRef = useRef(null);
     useEffect(() => {
         const getUserList = async () => {
@@ -32,14 +33,22 @@ export default function UserList({ listOwner, currentUser }) {
     async function handleUserAdd(listOwner, e) {
         e.preventDefault();
         try {
-            await fetch("http://localhost:3000/teams/addUser", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    username: creationInputValue.trim(),
-                    teamId: listOwner.id,
-                }),
-            });
+            const response = await fetch(
+                "http://localhost:3000/teams/addUser",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        username: creationInputValue.trim(),
+                        teamId: listOwner.id,
+                    }),
+                }
+            );
+            const data = await response.json();
+            if (!response.ok) {
+                setResponseError(data.message);
+                setTimeout(() => setResponseError(""), 1500);
+            }
             setAddingUser(false);
         } catch (err) {
             console.log(err.message);
@@ -151,6 +160,7 @@ export default function UserList({ listOwner, currentUser }) {
                         </div>
                     </form>
                 )}
+                <li className="userResponseError">{responseError}</li>
             </ul>
         </div>
     );

@@ -1,14 +1,16 @@
 import "./LoginPage.css";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function LoginPage({
     setIsLoggedIn,
     setCurrentUser,
     setListOwner,
 }) {
+    const [validationArray, setValidationArray] = useState([]);
     const usernameRef = useRef(null);
     const passRef = useRef(null);
     const checkboxRef = useRef(null);
+
     useEffect(() => {
         const checkRemembered = async () => {
             try {
@@ -36,10 +38,11 @@ export default function LoginPage({
             }
         };
         checkRemembered();
-    }, []);
+    }, [setCurrentUser, setIsLoggedIn, setListOwner]);
 
     async function handleSubmit(e) {
         e.preventDefault();
+        setValidationArray([]); // Reset errors on each attempt
         const submitter = e.nativeEvent.submitter.name;
 
         try {
@@ -58,7 +61,6 @@ export default function LoginPage({
             );
 
             const data = await response.json();
-            console.log(data.data);
             if (response.ok) {
                 setCurrentUser({
                     type: "user",
@@ -72,7 +74,14 @@ export default function LoginPage({
                 });
                 setIsLoggedIn(true);
             } else {
-                alert(data.message);
+                setValidationArray(() => {
+                    const newErrors = new Set([
+                        ...(data.errors?.errors?.map((err) => err.msg) || []),
+                        data.message || "", // Add res.message if it exists
+                    ]);
+                    return [...newErrors].filter((err) => err !== ""); // Remove empty strings
+                });
+                setTimeout(() => setValidationArray([]), 2000);
             }
         } catch (err) {
             console.log(err.message);
@@ -98,6 +107,13 @@ export default function LoginPage({
                     ref={checkboxRef}
                 />
                 <label htmlFor="remember">Remember me</label>
+            </div>
+            <div>
+                {validationArray.map((err, index) => (
+                    <p key={index} className="errorElement">
+                        {err}
+                    </p>
+                ))}
             </div>
             <input type="submit" value="Log in" name="login" />
             <input type="submit" value="Register" name="register" />

@@ -16,8 +16,7 @@ export function WebSocketProvider({ children, listOwner, currentUser }) {
         if (socket.current) {
             socket.current.close();
         }
-        console.log("CONNECTING TO WEB SOCKET WITH USER: ", currentUser);
-        console.log("WEBSOCKET LISTOWNER: ", listOwner);
+
         socket.current = new WebSocket(
             "ws://localhost:3000/?listOwner=" +
                 JSON.stringify(listOwner) +
@@ -26,7 +25,6 @@ export function WebSocketProvider({ children, listOwner, currentUser }) {
         );
 
         socket.current.addEventListener("open", () => {
-            console.log("Connected to webSocket");
             setIsConnected(true);
         });
 
@@ -35,7 +33,6 @@ export function WebSocketProvider({ children, listOwner, currentUser }) {
         });
 
         socket.current.addEventListener("close", () => {
-            console.log("Disconnected from webSocket");
             setIsConnected(false);
         });
 
@@ -48,7 +45,6 @@ export function WebSocketProvider({ children, listOwner, currentUser }) {
         if (socket.current && socket.current.readyState === 1) {
             socket.current.addEventListener(event, fun);
         } else {
-            console.log("Websocket not ready");
             return;
         }
     };

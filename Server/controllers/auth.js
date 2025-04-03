@@ -69,7 +69,6 @@ export async function Login(req, res) {
             owner: { type: "user", id: foundUserId },
         });
         const sessionId = req.session.id;
-        console.log(sessionId);
         if (req.body.isChecked) {
             setCookies(sessionId, foundUserId, res);
         }

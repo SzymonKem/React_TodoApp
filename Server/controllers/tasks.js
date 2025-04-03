@@ -10,7 +10,6 @@ export async function GetTasks(req, res) {
     owner.id = new mongoose.Types.ObjectId(owner.id);
     try {
         let currentList = await List.findOne({ "owner.id": owner.id });
-        console.log("Current list from getTasks: ", currentList);
         const gotTasks = await Promise.all(
             currentList.tasks.map(async (task) => {
                 const foundTask = await Task.findOne({ _id: task });
@@ -19,7 +18,6 @@ export async function GetTasks(req, res) {
                 }
             })
         );
-        console.log("Got tasks: ", gotTasks);
         res.status(200).json({
             status: "success",
             data: gotTasks,
@@ -38,16 +36,10 @@ export async function Add(req, res) {
     try {
         const newTask = new Task(task);
         const savedTask = await newTask.save();
-        console.log(task.owner);
-        console.log(teams);
-        console.log("logging task");
-        console.log(task);
         const list = await List.findOneAndUpdate(
             { _id: task.list },
             { $push: { tasks: savedTask._id } }
         );
-        console.log("logging list: ");
-        console.log(list);
         if (list.owner.type === "team") {
             broadcastToClients(list.owner.id, msg);
         }
@@ -87,20 +79,15 @@ export async function Edit(req, res) {
 export async function Delete(req, res) {
     const task = req.body;
     task.list = new mongoose.Types.ObjectId(task.list);
-    console.log(task);
     try {
         const deletedTask = await Task.findOneAndDelete({
             id: task.id,
             list: task.list,
         });
-        console.log("logging task");
-        console.log(task);
         const list = await List.findOneAndUpdate(
             { _id: task.list },
             { $pull: { tasks: deletedTask._id } }
         );
-        console.log("logging list");
-        console.log(list);
         if (list.owner.type === "team") {
             broadcastToClients(list.owner.id, msg);
         }

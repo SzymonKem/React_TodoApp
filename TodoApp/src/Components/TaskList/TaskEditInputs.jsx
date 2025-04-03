@@ -15,7 +15,6 @@ export default function TaskEditInputs({
         try {
             const newName = editNameRef.current.value.trim();
             const newDesc = editDescRef.current.value.trim();
-            console.log(taskElementsList);
             const currentTask = taskElementsList.find(
                 (element) => element.id == taskId
             );
@@ -32,7 +31,6 @@ export default function TaskEditInputs({
                     task.id === taskId ? editedTask : task
                 )
             );
-            console.log(editedTask);
             if (newName !== "" || newDesc !== "") {
                 await fetch("http://localhost:3000/tasks", {
                     method: "PUT",
@@ -41,7 +39,6 @@ export default function TaskEditInputs({
                 });
             }
             setEditingTask(false);
-            console.log("tags from handleConfirm: ", tags);
         } catch (err) {
             console.log(err.message);
         }
@@ -54,7 +51,6 @@ export default function TaskEditInputs({
         >
             <input
                 type="text"
-                // onInput={handleInput}
                 defaultValue={task.name}
                 placeholder="Add a task name"
                 ref={editNameRef}
@@ -62,13 +58,11 @@ export default function TaskEditInputs({
             <input
                 type="text"
                 defaultValue={task.desc}
-                // onInput={handleInput}
                 placeholder="Add a task description"
                 ref={editDescRef}
             />
 
             <ul className="tagListUl">
-                {console.log("tags: ", tags)}
                 {tags.map(
                     (tag) =>
                         tag != "in progress" &&
@@ -92,8 +86,6 @@ export default function TaskEditInputs({
                                                   )
                                               )
                                             : setTaskTags([...taskTags, tag]);
-                                        console.log("task tags");
-                                        console.log(task);
                                     }}
                                 >
                                     {tag}

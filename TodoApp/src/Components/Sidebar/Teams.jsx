@@ -22,14 +22,11 @@ export default function Teams({
                 );
                 const data = await response.json();
                 const receivedTeamsList = data.data;
-                console.log(receivedTeamsList);
-                console.log(listOwner);
                 const removed =
                     listOwner.type === "team" &&
                     !receivedTeamsList.some(
                         (team) => team._id === listOwner.id
                     );
-                console.log("removed: " + removed);
                 setTeamsList(receivedTeamsList);
                 if (removed) {
                     setListOwner(currentUser);
@@ -40,7 +37,6 @@ export default function Teams({
         };
         addWebSocketEventListener("message", (event) => {
             if (event.data == "teamsUpdated") {
-                console.log("teamsUpdadted");
                 getTeams();
             }
         });
@@ -59,8 +55,6 @@ export default function Teams({
             owner: currentUser.id,
             users: [currentUser.id],
         };
-        console.log("New team");
-        console.log(newTeam);
         try {
             const response = await fetch("http://localhost:3000/teams/create", {
                 method: "POST",
@@ -69,8 +63,6 @@ export default function Teams({
             });
             const data = await response.json();
             const receivedTeam = data.data;
-            console.log("New team after request");
-            console.log(receivedTeam);
             setTeamsList([...teamsList, receivedTeam]);
         } catch (err) {
             console.log(err.message);

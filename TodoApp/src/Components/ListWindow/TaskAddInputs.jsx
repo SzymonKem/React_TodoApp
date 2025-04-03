@@ -13,7 +13,8 @@ export default function TaskAddInputs({
     const nameRef = useRef(null);
     const descRef = useRef(null);
     function handleInput() {
-        const isInputEmpty = !nameRef.current.value || !descRef.current.value;
+        const isInputEmpty =
+            !nameRef.current.value.trim() || !descRef.current.value.trim();
         setIsButtonEnabled(!isInputEmpty);
     }
     async function handleAdd(e) {
@@ -84,8 +85,6 @@ export default function TaskAddInputs({
                                                   ...selectedTags,
                                                   tag,
                                               ]);
-                                        console.log("selected tags");
-                                        console.log(selectedTags);
                                     }}
                                 >
                                     {tag}

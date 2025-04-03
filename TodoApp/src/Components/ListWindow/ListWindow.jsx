@@ -22,13 +22,11 @@ export default function ListWindow({
     const getTasks = useCallback(
         async (type) => {
             try {
-                console.log("Sending getTasks request");
                 const response = await fetch(
                     "http://localhost:3000/tasks/?owner=" +
                         JSON.stringify(listOwner)
                 );
                 const data = await response.json();
-                console.log(data);
                 const receivedTaskList = data.data;
                 if (type == "allTasksRefresh") {
                     return receivedTaskList;
@@ -39,18 +37,15 @@ export default function ListWindow({
                         ? receivedTaskList[receivedTaskList.length - 1].id + 1
                         : 0
                 );
-            } catch (error) {
-                console.error("Error fetching tasks:", error);
+            } catch (err) {
+                console.log(err.message);
             }
         },
         [listOwner]
     );
     useEffect(() => {
         if (!isConnected) return;
-        console.log("Adding websocket listener: ");
         addWebSocketEventListener("message", (event) => {
-            console.log("Received message tasks");
-            console.log(event.data);
             if (event.data == "tasksUpdated" || event.data == "tagsUpdated") {
                 getTasks();
             }

@@ -32,7 +32,6 @@ export default function Filters({
         };
         addWebSocketEventListener("message", (event) => {
             if (event.data == "tagsUpdated") {
-                console.log("tags updated");
                 getTags();
             }
         });
@@ -83,15 +82,12 @@ export default function Filters({
                     (task) => task != null && task != undefined
                 )
             );
-            console.log("Updating all tasks");
         }
 
         getAllTasks();
     }, [taskElementsList, getTasks]);
 
     useEffect(() => {
-        console.log("All tasks: ", allTasks);
-        console.log("filterTags: ", filterTags);
         if (filterTags.length == 0) {
             if (JSON.stringify(taskElementsList) !== JSON.stringify(allTasks)) {
                 setTaskElementsList(allTasks);
@@ -101,7 +97,6 @@ export default function Filters({
         const matchingTasks = allTasks.filter((task) =>
             task.tags.some((tag) => filterTags.includes(tag))
         );
-        console.log("Matching tasks: ", matchingTasks);
         if (
             JSON.stringify(matchingTasks) !== JSON.stringify(taskElementsList)
         ) {

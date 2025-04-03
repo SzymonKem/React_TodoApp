@@ -13,7 +13,6 @@ export default function TaskList({
     const [editingTaskId, setEditingTaskId] = useState(null);
 
     async function handleDone(taskId) {
-        console.log("TAGS FROM HANDLEDONE: ", tags);
         const currentTask = taskElementsList.find(
             (element) => element.id === taskId
         );
@@ -33,8 +32,8 @@ export default function TaskList({
                       "in progress",
                   ],
         };
-        setTaskElementsList((prevTaskElementsList) =>
-            prevTaskElementsList.map((task) =>
+        setTaskElementsList(
+            taskElementsList.map((task) =>
                 task.id === taskId ? newTask : task
             )
         );
@@ -44,26 +43,20 @@ export default function TaskList({
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newTask),
             });
-            console.log("TAGS AFTER HANDLE DONE: ", tags);
         } catch (err) {
             console.log(err.message);
         }
     }
-    console.log(
-        "taskelementsList from tasklist before filter",
-        taskElementsList
-    );
+
     let toDoElementsList = taskElementsList.filter(
         (task) => task.isDone === false
     );
-    console.log("taskelementsLits", taskElementsList);
     let doneElementsList = taskElementsList.filter(
         (task) => task.isDone === true
     );
 
     return (
         <div className={`taskList ${editingTask ? "scrollable" : ""}`}>
-            {console.log("TAGS FROM TASKLIST", tags)}
             <ul className="toDoList">
                 {toDoElementsList.map((t) => (
                     <Task

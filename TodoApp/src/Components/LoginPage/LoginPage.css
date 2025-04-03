@@ -55,7 +55,7 @@ input[name="register"]:hover {
 .rememberMe {
     text-align: left;
     color: rgb(60, 180, 254);
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     display: flex;
     gap: 10px;
 }
@@ -63,4 +63,12 @@ input[name="register"]:hover {
 .rememberMe > input {
     accent-color: rgb(60, 180, 254);
     background-color: var(--black);
+}
+
+.errorElement {
+    text-align: center;
+    padding: 0;
+    color: red;
+    margin: 0;
+    font-size: 0.8em;
 }
