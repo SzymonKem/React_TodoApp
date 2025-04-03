@@ -16,6 +16,8 @@ export function WebSocketProvider({ children, listOwner, currentUser }) {
         if (socket.current) {
             socket.current.close();
         }
+        console.log("CONNECTING TO WEB SOCKET WITH USER: ", currentUser);
+        console.log("WEBSOCKET LISTOWNER: ", listOwner);
         socket.current = new WebSocket(
             "ws://localhost:3000/?listOwner=" +
                 JSON.stringify(listOwner) +

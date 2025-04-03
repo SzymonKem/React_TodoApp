@@ -10,11 +10,11 @@ export async function GetTasks(req, res) {
     owner.id = new mongoose.Types.ObjectId(owner.id);
     try {
         let currentList = await List.findOne({ "owner.id": owner.id });
-        console.log("Current list: ", currentList);
+        console.log("Current list from getTasks: ", currentList);
         const gotTasks = await Promise.all(
             currentList.tasks.map(async (task) => {
                 const foundTask = await Task.findOne({ _id: task });
-                if (foundTask !== null) {
+                if (foundTask !== null && foundTask !== undefined) {
                     return foundTask;
                 }
             })

@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useOutsideClick } from "../../hooks/useOutsideClick";
 
 export default function UserList({ listOwner, currentUser }) {
     const [currentTeam, setCurrentTeam] = useState({
@@ -8,6 +9,7 @@ export default function UserList({ listOwner, currentUser }) {
     });
     const [addingUser, setAddingUser] = useState(false);
     const [creationInputValue, setCreationInputValue] = useState("");
+    const userFormRef = useRef(null);
     useEffect(() => {
         const getUserList = async () => {
             try {
@@ -58,13 +60,19 @@ export default function UserList({ listOwner, currentUser }) {
             console.log(err.message);
         }
     }
+
+    useOutsideClick(userFormRef, setAddingUser, ".addUser");
     return (
         <div className="userListContainer">
             <h2>Owner:</h2>
             <span>{currentTeam.owner}</span>
             <h3>Users: </h3>
             {currentUser.id == currentTeam.ownerId && (
-                <a href="#" onClick={() => setAddingUser(true)}>
+                <a
+                    href="#"
+                    onClick={() => setAddingUser(true)}
+                    className="addUser"
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -118,6 +126,7 @@ export default function UserList({ listOwner, currentUser }) {
                         action="#"
                         method="post"
                         onSubmit={(e) => handleUserAdd(listOwner, e)}
+                        ref={userFormRef}
                     >
                         <input
                             required

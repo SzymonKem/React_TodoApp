@@ -1,22 +1,12 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import LogoutButton from "./LogoutButton";
+import { useOutsideClick } from "../../hooks/useOutsideClick";
 
 export default function UserIcon({ currentUser, setIsLoggedIn }) {
     console.log("CURRENT USER: ", currentUser);
     const [logoutVisible, setLogoutVisible] = useState(false);
     const userIconRef = useRef(null);
-
-    useEffect(() => {
-        function handleOutsideClick(e) {
-            if (!userIconRef.current.contains(e.target)) {
-                setLogoutVisible(false);
-            }
-        }
-        document.addEventListener("click", handleOutsideClick);
-        return () => {
-            document.removeEventListener("click", handleOutsideClick);
-        };
-    }, []);
+    useOutsideClick(userIconRef, setLogoutVisible);
 
     return (
         <div className="userIcon" ref={userIconRef}>

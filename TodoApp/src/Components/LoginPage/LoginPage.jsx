@@ -1,7 +1,11 @@
 import "./LoginPage.css";
 import { useEffect, useRef } from "react";
 
-export default function LoginPage({ setIsLoggedIn, setCurrentUser }) {
+export default function LoginPage({
+    setIsLoggedIn,
+    setCurrentUser,
+    setListOwner,
+}) {
     const usernameRef = useRef(null);
     const passRef = useRef(null);
     const checkboxRef = useRef(null);
@@ -18,6 +22,11 @@ export default function LoginPage({ setIsLoggedIn, setCurrentUser }) {
                 const data = await response.json();
                 setIsLoggedIn(data.data.logIn);
                 setCurrentUser({
+                    type: "user",
+                    id: data.data.user,
+                    list: data.data.list,
+                });
+                setListOwner({
                     type: "user",
                     id: data.data.user,
                     list: data.data.list,
@@ -52,6 +61,11 @@ export default function LoginPage({ setIsLoggedIn, setCurrentUser }) {
             console.log(data.data);
             if (response.ok) {
                 setCurrentUser({
+                    type: "user",
+                    id: data.data.foundUserId,
+                    list: data.data.usersList,
+                });
+                setListOwner({
                     type: "user",
                     id: data.data.foundUserId,
                     list: data.data.usersList,

@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useWebSocket } from "../../Contexts/WebSocketProvider";
+import { useOutsideClick } from "../../hooks/useOutsideClick";
 
 export default function Teams({
     currentUser,
@@ -10,6 +11,7 @@ export default function Teams({
     const [addingTeam, setAddingTeam] = useState(false);
     const [creationInputValue, setcreationInputValue] = useState("");
     const [teamsList, setTeamsList] = useState([]);
+    const teamFormRef = useRef(null);
     const { addWebSocketEventListener, isConnected } = useWebSocket();
     useEffect(() => {
         const getTeams = async () => {
@@ -75,6 +77,7 @@ export default function Teams({
         }
         setAddingTeam(false);
     }
+    useOutsideClick(teamFormRef, setAddingTeam, ".addTeam");
     async function handleTeamDelete(team) {
         try {
             await fetch("http://localhost:3000/teams/delete", {
@@ -156,7 +159,9 @@ export default function Teams({
                     <form
                         action="#"
                         method="post"
+                        onClick={(e) => e.stopPropagation}
                         onSubmit={(e) => handleTeamAdd(currentUser, e)}
+                        ref={teamFormRef}
                     >
                         <input
                             required

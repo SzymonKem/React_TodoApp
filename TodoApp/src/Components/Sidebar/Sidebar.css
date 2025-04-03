@@ -160,6 +160,10 @@ ul > form > input[type="text"] {
     border-radius: 20px;
 }
 
+.addTeam {
+    width: fit-content;
+}
+
 .addButtons {
     display: flex;
     justify-content: center;

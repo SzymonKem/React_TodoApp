@@ -16,7 +16,12 @@
     gap: 15px;
 }
 
+.toDoList {
+    margin-bottom: 0;
+}
+
 .task {
+    position: relative;
     width: 35%;
     max-width: 80%;
     display: flex;
@@ -52,34 +57,41 @@ p {
     transition: 0.5s;
 }
 
+.edit svg,
+.delete svg {
+    width: 20px;
+    height: 20px;
+}
+
 .delete {
-    background-color: rgb(254, 60, 60);
-    color: rgb(83, 23, 23);
-    box-shadow: 3px 3px 12px rgb(254, 60, 60);
-    margin: 0 10px 10px 0;
-    border-radius: 0 20px 20px 0;
+    background: transparent;
+    color: red;
 }
 
 .delete:hover {
     background-color: rgb(161, 0, 0);
+    color: white;
     box-shadow: 3px 3px 12px rgb(161, 0, 0);
 }
 
 .edit {
-    background-color: rgb(60, 180, 254);
-    color: rgb(23, 44, 83);
-    box-shadow: -3px 3px 12px rgb(60, 180, 254);
-    margin: 0 0 10px 10px;
-    border-radius: 20px 0 0 20px;
+    background: transparent;
+    color: #0281ff;
+    border-radius: 20px 0 0 0;
 }
 
 .edit:hover {
     background-color: rgb(60, 121, 254);
+    color: var(--black);
     box-shadow: -3px 3px 12px rgb(60, 121, 254);
 }
 
 .taskELementButtons {
-    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20%;
+    height: fit-content;
     display: flex;
     justify-content: space-between;
 }

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useWebSocket } from "../../Contexts/WebSocketProvider";
+import { useOutsideClick } from "../../hooks/useOutsideClick";
 
 export default function Filters({
     tags,
@@ -13,6 +14,7 @@ export default function Filters({
     const [filterTags, setFilterTags] = useState([]);
     const [allTasks, setAllTasks] = useState([]);
     const tagInputRef = useRef(null);
+    const tagFormRef = useRef(null);
     const { addWebSocketEventListener, isConnected } = useWebSocket();
 
     useEffect(() => {
@@ -118,6 +120,8 @@ export default function Filters({
             : setFilterTags([...filterTags, e.target.textContent]);
     }
 
+    useOutsideClick(tagFormRef, setAddingTag, ".addTag");
+
     return (
         <>
             <div className="tagList">
@@ -161,6 +165,7 @@ export default function Filters({
                                 action="#"
                                 method="post"
                                 onSubmit={handleTagAdd}
+                                ref={tagFormRef}
                             >
                                 <a href="#" onClick={() => setAddingTag(false)}>
                                     <svg
@@ -181,7 +186,11 @@ export default function Filters({
                                 <input type="text" required ref={tagInputRef} />
                             </form>
                         ) : (
-                            <a href="#" onClick={() => setAddingTag(true)}>
+                            <a
+                                href="#"
+                                onClick={() => setAddingTag(true)}
+                                className="addTag"
+                            >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
